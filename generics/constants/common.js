@@ -1,9 +1,12 @@
 /**
  * name : message-constants/common.js
- * author : Akash Shah
- * Date : 09-Dec-2019
+ * author : Aman 
+ * Date : 20-03-2020
  * Description : All common messages.
  */
 
 
-module.exports = {};
+module.exports = {
+    "UPDATED_ENTITY" : "Updated entity data",
+    "UPDATED_USER" : "Updated user data"
+};
