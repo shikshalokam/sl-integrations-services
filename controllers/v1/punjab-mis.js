@@ -22,11 +22,11 @@
    }
 
    /**
-     * @api {post} /integration-service/api/v1/punjab-mis/entityUpdate 
+     * @api {post} /integration-service/api/v1/punjab-mis/entity 
      * Update entity data
      * @apiVersion 1.0.0
      * @apiGroup Punjab-MIS
-     * @apiSampleRequest /integration-service/api/v1/punjab-mis/entityUpdate    
+     * @apiSampleRequest /integration-service/api/v1/punjab-mis/entity    
      * @apiUse successBody
      * @apiUse errorBody
      * @apiParamExample {json} Request:
@@ -59,19 +59,17 @@
     /**
       * Update entity.
       * @method
-      * @name entityUpdate
+      * @name entity
       * @param  {Request} req request body.
       * @returns {JSON} Response consists of message and status code.
     */
 
-   async entityUpdate(req) {
+   async entity(req) {
     return new Promise(async (resolve, reject) => {
 
         try {
 
-          let entityUpdateDocument = await punjabMISHelper.entityUpdate(
-            req
-          );
+          let entityUpdateDocument = await punjabMISHelper.entity( req );
 
           return resolve(entityUpdateDocument);
 
@@ -90,11 +88,11 @@
    }
 
    /**
-     * @api {post} /integration-service/api/v1/punjab-mis/userUpdate 
+     * @api {post} /integration-service/api/v1/punjab-mis/user 
      * Update user data
      * @apiVersion 1.0.0
      * @apiGroup Punjab-MIS
-     * @apiSampleRequest /integration-service/api/v1/punjab-mis/userUpdate    
+     * @apiSampleRequest /integration-service/api/v1/punjab-mis/user    
      * @apiUse successBody
      * @apiUse errorBody
      * @apiParamExample {json} Request:
@@ -125,19 +123,17 @@
     /**
       * User update 
       * @method
-      * @name userUpdate
+      * @name user
       * @param  {Request} req request body.
       * @returns {JSON} Response consists of message and status code.
     */
 
-   async userUpdate(req) {
+   async user(req) {
     return new Promise(async (resolve, reject) => {
 
         try {
 
-          let userUpdateDocument = await punjabMISHelper.userUpdate(
-            req
-          );
+          let userUpdateDocument = await punjabMISHelper.user( req );
 
           return resolve(userUpdateDocument);
 

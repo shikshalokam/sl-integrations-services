@@ -7,6 +7,9 @@
 
 
 module.exports = {
-    "UPDATED_ENTITY" : "Updated entity data",
-    "UPDATED_USER" : "Updated user data"
+    "COMPLETED" : "completed",
+    "SUCCESS" : "success",
+    "PENDING" : "pending",
+    "ENTITY_UPDATE" : "entity",
+    "USER_UPDATE" : "user"
 };

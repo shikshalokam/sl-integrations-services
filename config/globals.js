@@ -23,6 +23,7 @@ module.exports = function () {
   global.MODULES_BASE_PATH = ROOT_PATH + "/module"
   global._ = require("lodash");
   global.config = require(".");
+  gen.utils = require(ROOT_PATH + "/generics/helpers/utils");
 
   global.httpStatusCode = 
   require(ROOT_PATH + "/generics/http-status-codes");
@@ -64,6 +65,7 @@ module.exports = function () {
     .forEach(function (file) {
       if (file.match(/\.js$/) !== null) {
         let name = file.replace('.js', '');
+        name = gen.utils.hyphenCaseToCamelCase(name);
         global.constants[name] = require(ROOT_PATH + "/generics/constants/" + file);
       }
     });

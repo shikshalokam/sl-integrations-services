@@ -9,6 +9,14 @@ module.exports = {
     name: "requestTracker",
     schema: {
         userId : String,
-        metaInformation : Object
+        metaInformation : Object,
+        status : {
+            type : String,
+            default : "pending"
+        },
+        remarks : {
+            type : String,
+            default : ""
+        }
     }
   };

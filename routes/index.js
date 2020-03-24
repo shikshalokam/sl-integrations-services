@@ -1,6 +1,6 @@
 /**
  * name : routes/index.js
- * author : Aman Jung Karki
+ * author : Aman
  * Date : 20-03-2020
  * Description : All routes.
  */
