@@ -1,7 +1,7 @@
 /**
  * name : routes/index.js
- * author : Aman Jung Karki
- * Date : 15-Nov-2019
+ * author : Aman
+ * Date : 20-03-2020
  * Description : All routes.
  */
 
@@ -16,10 +16,7 @@ const dataSetUpload = require(ROOT_PATH + "/generics/middleware/dataSetUpload");
 module.exports = function (app) {
 
   const APPLICATION_BASE_URL = process.env.APPLICATION_BASE_URL;
-
-  if (process.env.NODE_ENV !== "testing") {
-    app.use(APPLICATION_BASE_URL, authenticator);
-  }
+  app.use(APPLICATION_BASE_URL, authenticator);
 
   app.use(APPLICATION_BASE_URL, dataSetUpload);
   app.use(APPLICATION_BASE_URL, pagination);
@@ -36,8 +33,7 @@ module.exports = function (app) {
     else if (!(controllers[req.params.version][req.params.controller][req.params.method] 
       || controllers[req.params.version][req.params.controller][req.params.file][req.params.method])) {
       next();
-    }
-    else if (req.params.method.startsWith("_")) {
+    } else if (req.params.method.startsWith("_")) {
       next();
     } else {
 
@@ -94,7 +90,7 @@ module.exports = function (app) {
         }
 
         if(ENABLE_DEBUG_LOGGING === "ON") {
-          logger.info("Response:", result);
+          log.info("Response:", result);
         }
 
       }
@@ -136,7 +132,7 @@ module.exports = function (app) {
         slackClient.sendMessageToSlack(_.merge(toLogObject, customFields));
         
         if(ENABLE_DEBUG_LOGGING === "ON") {
-          logger.error("Error Response:", error);
+          log.error("Error Response:", error);
         }
       };
     }

@@ -1,3 +1,12 @@
+/**
+ * name : globals.js
+ * author : Aman
+ * Date : 20-03-2020
+ * Description : All globals related information.
+ */
+
+// Dependencies
+
 let fs = require("fs"),
   path = require("path"),
   requireAll = require("require-all");
@@ -14,6 +23,7 @@ module.exports = function () {
   global.MODULES_BASE_PATH = ROOT_PATH + "/module"
   global._ = require("lodash");
   global.config = require(".");
+  gen.utils = require(ROOT_PATH + "/generics/helpers/utils");
 
   global.httpStatusCode = 
   require(ROOT_PATH + "/generics/http-status-codes");
@@ -30,13 +40,14 @@ module.exports = function () {
     }
   });
 
-  //load schema files
-  fs.readdirSync(ROOT_PATH + '/models/').forEach(function (file) {
-    if (file.match(/\.js$/) !== null) {
-      var name = file.replace('.js', '');
-      global[name + 'Schema'] = require(ROOT_PATH + '/models/' + file);
-    }
-  });
+    // load schema files
+    global.schemas = {};
+    fs.readdirSync(ROOT_PATH + '/models/').forEach(function (file) {
+      if (file.match(/\.js$/) !== null) {
+        var name = file.replace('.js', '');
+        global.schemas[name] = require(ROOT_PATH + '/models/' + file);
+      }
+    });
 
   // boostrap all controllers
   global.controllers = requireAll({
@@ -54,6 +65,7 @@ module.exports = function () {
     .forEach(function (file) {
       if (file.match(/\.js$/) !== null) {
         let name = file.replace('.js', '');
+        name = gen.utils.hyphenCaseToCamelCase(name);
         global.constants[name] = require(ROOT_PATH + "/generics/constants/" + file);
       }
     });
