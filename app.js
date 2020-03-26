@@ -2,6 +2,7 @@ require("dotenv").config();
 
 global.config = require("./config");
 require("./config/globals")();
+require("./generics/scheduler");
 
 let environmentData = require("./envVariables")();
 
