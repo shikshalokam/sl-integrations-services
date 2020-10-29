@@ -21,20 +21,30 @@
      return "punjabMis";
    }
 
+    /**
+     * @apiDefine errorBody
+     * @apiError {String} status 4XX,5XX
+     * @apiError {String} message Error
+     */
+
+    /**
+     * @apiDefine successBody
+     *  @apiSuccess {String} status 200
+     * @apiSuccess {String} result Data
+     */
+
    /**
      * @api {post} /integration-service/api/v1/punjab-mis/entity 
      * Update entity data
      * @apiVersion 1.0.0
      * @apiGroup Punjab-MIS
      * @apiSampleRequest /integration-service/api/v1/punjab-mis/entity    
-     * @apiUse successBody
-     * @apiUse errorBody
-     * @apiParamExample {json} Request:
+     * @apiParamExample {json}  Request-Body:
      * {
      * "entityId" : "",
      * "metaInformation" : {
-     * "name" : "",
      * "School_Code": "",
+     * "School_Name" : "",
      * "UDISE_Code": "",
      * "District_Code": "",
      * "Tehsil_Code": "",
@@ -65,22 +75,11 @@
      * }
      * @apiParamExample {json} Response :
      * {
-     * "message": "Updated entity data",
-     * "status": 200,
-     * "result": {
-     * "method": "",
-     * "headers": {
-     * "appname": ""
-     * },
-     * "url": "",
-     * "body": {
-     * "entityId": "",
-     * "metaInformation": {
-     * "name": ""
+     * "message": "Updated entity data successfully",
+     * "status": 200
      * }
-     * }
-     * }
-     * }
+     * @apiUse successBody
+     * @apiUse errorBody
      */
 
     /**
@@ -120,13 +119,8 @@
      * @apiVersion 1.0.0
      * @apiGroup Punjab-MIS
      * @apiSampleRequest /integration-service/api/v1/punjab-mis/user    
-     * @apiUse successBody
-     * @apiUse errorBody
-     * @apiParamExample {json} Request:
+     * @apiParamExample {json}  Request-Body:
      * {
-     * "roles":{
-     * "code":""
-     * },
      * "FacultyInfo_Code": "",
      * "School_Code": "",
      * "Faculty_Name": "",
@@ -137,20 +131,10 @@
      * @apiParamExample {json} Response :
      * {
      * "message": "Updated entity data",
-     * "status": 200,
-     * "result": {
-     * "method": "",
-     * "headers": {
-     * "appname": ""
-     * },
-     * "url": "",
-     * "body": {
-     * "roles": {
-     * "code": ""
+     * "status": 200
      * }
-     * }
-     * }
-     * }
+     * @apiUse successBody
+     * @apiUse errorBody
      */
 
     /**
@@ -186,14 +170,12 @@
 
 
     /**
-     * @api {post} /integration-service/api/v1/punjab-mis/createEntity 
-     * Create entity data
+     * @api {post} /integration-service/api/v1/punjab-mis/createEntity?entityType=:entityType
+     * Create entity  
      * @apiVersion 1.0.0
      * @apiGroup Punjab-MIS
      * @apiSampleRequest /integration-service/api/v1/punjab-mis/createEntity    
-     * @apiUse successBody
-     * @apiUse errorBody
-     * @apiParamExample {json} Request:
+     * @apiParamExample {json}  Request-Body:
      * {
      * "School_Code": "",
      * "School_Name": "",
@@ -229,6 +211,8 @@
      *   "message": "Created entity successfully",
      *   "status": 200
      * }
+     * @apiUse successBody
+     * @apiUse errorBody
      */
 
     /**
@@ -269,9 +253,7 @@
      * @apiVersion 1.0.0
      * @apiGroup Punjab-MIS
      * @apiSampleRequest /integration-service/api/v1/punjab-mis/createUser    
-     * @apiUse successBody
-     * @apiUse errorBody
-     * @apiParamExample {json} Request:
+     * @apiParamExample {json}  Request-Body:
      * {
      * "FacultyInfo_Code": "",
      * "School_Code": "",
@@ -285,6 +267,8 @@
      * "message": "Created the user successfully",
      * "status": 200
      * }
+     * @apiUse successBody
+     * @apiUse errorBody
      */
 
     /**
