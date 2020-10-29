@@ -33,7 +33,34 @@
      * {
      * "entityId" : "",
      * "metaInformation" : {
-     * "name" : ""
+     * "name" : "",
+     * "School_Code": "",
+     * "UDISE_Code": "",
+     * "District_Code": "",
+     * "Tehsil_Code": "",
+     * "Edu_Block_Code": "",
+     * "Cluster_Code": "",
+     * "Village_Code": "",
+     * "Pin_Code": "",	            
+     * "Office_PhoneNo": "",
+     * "School_Email": "",
+     * "SchoolType_Code": "",
+     * "SchoolCategory_Code": "",
+     * "School_Status": "",
+     * "SchoolManagement_Code": "",
+     * "Lowest_Class_Range": "",
+     * "Highest_Class_Range": "",
+     * "Instrn_Medium": "",
+     * "Area_Type": "",
+     * "Longitude": "",
+     * "Latitude": "",
+     * "IsSchool_Sft": "",
+     * "School_Status_Int": "",
+     * "Area": "",
+     * "IsVocational_School": "",
+     * "MDM_SchoolCategory_Code": "",
+     * "MDM_VILLAGE_CODE": "",
+     * "MDM_Source": "",
      * }
      * }
      * @apiParamExample {json} Response :
@@ -99,7 +126,13 @@
      * {
      * "roles":{
      * "code":""
-     * }
+     * },
+     * "FacultyInfo_Code": "",
+     * "School_Code": "",
+     * "Faculty_Name": "",
+     * "Email_Id": "",
+     * "Mobile_No": "",
+     * "School_Code_Current": ""    
      * }
      * @apiParamExample {json} Response :
      * {
@@ -151,6 +184,139 @@
       })
    }
 
+
+    /**
+     * @api {post} /integration-service/api/v1/punjab-mis/createEntity 
+     * Create entity data
+     * @apiVersion 1.0.0
+     * @apiGroup Punjab-MIS
+     * @apiSampleRequest /integration-service/api/v1/punjab-mis/createEntity    
+     * @apiUse successBody
+     * @apiUse errorBody
+     * @apiParamExample {json} Request:
+     * {
+     * "School_Code": "",
+     * "School_Name": "",
+     * "UDISE_Code": "",
+     * "District_Code": "",
+     * "Tehsil_Code": "",
+     * "Edu_Block_Code": "",
+     * "Cluster_Code": "",
+     * "Village_Code": "",
+     * "Pin_Code": "",	            
+     * "Office_PhoneNo": "",
+     * "School_Email": "",
+     * "SchoolType_Code": "",
+     * "SchoolCategory_Code": "",
+     * "School_Status": "",
+     * "SchoolManagement_Code": "",
+     * "Lowest_Class_Range": "",
+     * "Highest_Class_Range": "",
+     * "Instrn_Medium": "",
+     * "Area_Type": "",
+     * "Longitude": "",
+     * "Latitude": "",
+     * "IsSchool_Sft": "",
+     * "School_Status_Int": "",
+     * "Area": "",
+     * "IsVocational_School": "",
+     * "MDM_SchoolCategory_Code": "",
+     * "MDM_VILLAGE_CODE": "",
+     * "MDM_Source": "",
+     * }
+     * @apiParamExample {json} Response :
+     * {
+     *   "message": "Created entity successfully",
+     *   "status": 200
+     * }
+     */
+
+    /**
+      * Create entity.
+      * @method
+      * @name createEntity
+      * @param  {Request} req request body.
+      * @returns {JSON} Response consists of message and status code.
+    */
+
+    async createEntity(req) {
+      return new Promise(async (resolve, reject) => {
+
+        try {
+
+          let entityCreateDocument = await punjabMISHelper.createEntity( req );
+
+          return resolve(entityCreateDocument);
+
+        } catch (error) {
+          reject({
+            status: 
+            error.status || 
+            httpStatusCode["internal_server_error"].status,
+            
+            message: 
+            error.message || 
+            httpStatusCode["internal_server_error"].message
+          })
+        }
+      })
+   }
+
+
+    /**
+     * @api {post} /integration-service/api/v1/punjab-mis/createUser 
+     * Create user 
+     * @apiVersion 1.0.0
+     * @apiGroup Punjab-MIS
+     * @apiSampleRequest /integration-service/api/v1/punjab-mis/createUser    
+     * @apiUse successBody
+     * @apiUse errorBody
+     * @apiParamExample {json} Request:
+     * {
+     * "FacultyInfo_Code": "",
+     * "School_Code": "",
+     * "Faculty_Name": "",
+     * "Email_Id": "",
+     * "Mobile_No": "",
+     * "School_Code_Current": ""    
+     * }
+     * @apiParamExample {json} Response :
+     * {
+     * "message": "Created the user successfully",
+     * "status": 200
+     * }
+     */
+
+    /**
+      * Create user
+      * @method
+      * @name createUser
+      * @param  {Request} req request body.
+      * @returns {JSON} Response consists of message and status code.
+    */
+
+  async createUser(req) {
+    return new Promise(async (resolve, reject) => {
+
+        try {
+
+          let userDocument = await punjabMISHelper.createUser( req );
+
+          return resolve(userDocument);
+
+        } catch (error) {
+          reject({
+            status: 
+            error.status || 
+            httpStatusCode["internal_server_error"].status,
+            
+            message: 
+            error.message || 
+            httpStatusCode["internal_server_error"].message
+          })
+        }
+      })
+  }
 
  };
  

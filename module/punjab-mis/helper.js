@@ -127,6 +127,100 @@ module.exports = class PunjabMISHelper {
 
     }
 
+
+
+     /**
+      * Create entity.
+      * @method
+      * @name createEntity
+      * @param {Object} requestedData - All requested data.
+      * @returns {Promise} returns a promise.
+     */
+
+     static createEntity( requestedData ) {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let entityTrackerDocument =  await _createRequestData(requestedData);
+
+                let entityCreated = await samikshaService.createEntity(
+                    requestedData.body
+                );
+
+                if ( entityCreated.status === httpStatusCode.ok.status ) {
+
+                    entityTrackerDocument = 
+                    await _updateRequestTrackerData(
+                        id
+                    );
+
+                }
+
+                return resolve({});
+
+            } catch (error) {
+                return reject(error);
+            }
+        })
+
+
+    }
+
+     /**
+      * Update user data.
+      * @method
+      * @name user
+      * @param {Object} requestedData - All requested data.
+      * @returns {Promise} returns a promise.
+     */
+
+    static user( requestedData, userId = false, id = false ) {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let userTrackerDocument;
+
+                if( !id ) {
+                    
+                    userTrackerDocument = 
+                    await _createRequestData(requestedData);
+
+                    id = userTrackerDocument._id;
+
+                }
+
+                let userUpdate = await samikshaService.userUpdate(
+                    userId ? userId : requestedData.userDetails.userId,
+                    requestedData.body
+                );
+
+                if ( userUpdate.status === httpStatusCode.ok.status ) {
+
+                    userTrackerDocument = 
+                    await _updateRequestTrackerData(
+                        id
+                    );
+
+                }
+
+                return resolve({
+                    message : constants.apiResponses.UPDATED_USER,
+                    result : {
+                        userUpdateStatus : 
+                        userTrackerDocument && userTrackerDocument.status ? 
+                        userTrackerDocument.status : "",
+                        entityUpdateRemarks : 
+                        userTrackerDocument && userTrackerDocument.remarks ?
+                        userTrackerDocument.remarks : "",
+                    }
+                });
+
+            } catch (error) {
+                return reject(error);
+            }
+        })
+    }
+
 }
 
 /**
