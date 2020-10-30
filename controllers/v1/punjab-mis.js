@@ -34,11 +34,11 @@
      */
 
    /**
-     * @api {post} /integration-service/api/v1/punjab-mis/entity 
+     * @api {post} /integrations/api/v1/punjab-mis/updateEntity 
      * Update entity data
      * @apiVersion 1.0.0
      * @apiGroup Punjab-MIS
-     * @apiSampleRequest /integration-service/api/v1/punjab-mis/entity    
+     * @apiSampleRequest /integrations/api/v1/punjab-mis/updateEntity    
      * @apiParamExample {json}  Request-Body:
      * {
      * "entityId" : "",
@@ -85,12 +85,12 @@
     /**
       * Update entity.
       * @method
-      * @name entity
+      * @name updateEntity
       * @param  {Request} req request body.
       * @returns {JSON} Response consists of message and status code.
     */
 
-   async entity(req) {
+   async updateEntity(req) {
     return new Promise(async (resolve, reject) => {
 
         try {
@@ -114,11 +114,11 @@
    }
 
    /**
-     * @api {post} /integration-service/api/v1/punjab-mis/user 
+     * @api {post} /integrations/api/v1/punjab-mis/updateUser 
      * Update user data
      * @apiVersion 1.0.0
      * @apiGroup Punjab-MIS
-     * @apiSampleRequest /integration-service/api/v1/punjab-mis/user    
+     * @apiSampleRequest /integrations/api/v1/punjab-mis/updateUser    
      * @apiParamExample {json}  Request-Body:
      * {
      * "FacultyInfo_Code": "",
@@ -140,12 +140,12 @@
     /**
       * User update 
       * @method
-      * @name user
+      * @name updateUser
       * @param  {Request} req request body.
       * @returns {JSON} Response consists of message and status code.
     */
 
-   async user(req) {
+   async updateUser(req) {
     return new Promise(async (resolve, reject) => {
 
         try {
@@ -170,11 +170,11 @@
 
 
     /**
-     * @api {post} /integration-service/api/v1/punjab-mis/createEntity?entityType=:entityType
+     * @api {post} /integrations/api/v1/punjab-mis/createEntity?entityType=:entityType
      * Create entity  
      * @apiVersion 1.0.0
      * @apiGroup Punjab-MIS
-     * @apiSampleRequest /integration-service/api/v1/punjab-mis/createEntity    
+     * @apiSampleRequest /integrations/api/v1/punjab-mis/createEntity?entityType=school
      * @apiParamExample {json}  Request-Body:
      * {
      * "School_Code": "",
@@ -248,11 +248,11 @@
 
 
     /**
-     * @api {post} /integration-service/api/v1/punjab-mis/createUser 
+     * @api {post} /integrations/api/v1/punjab-mis/createUser 
      * Create user 
      * @apiVersion 1.0.0
      * @apiGroup Punjab-MIS
-     * @apiSampleRequest /integration-service/api/v1/punjab-mis/createUser    
+     * @apiSampleRequest /integrations/api/v1/punjab-mis/createUser    
      * @apiParamExample {json}  Request-Body:
      * {
      * "FacultyInfo_Code": "",
