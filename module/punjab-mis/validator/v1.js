@@ -9,10 +9,10 @@ module.exports = (req) => {
 
     let validator = {
 
-        updateEntity : function () {
-            req.checkBody('entityId').exists().withMessage("required entity id");
-            req.checkBody('entityType').exists().withMessage("required entity type");
-        }
+        // updateEntity : function () {
+        //     req.checkBody('entityId').exists().withMessage("required entity id");
+        //     req.checkBody('entityType').exists().withMessage("required entity type");
+        // }
 
     }
 

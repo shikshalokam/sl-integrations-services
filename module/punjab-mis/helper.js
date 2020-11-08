@@ -10,38 +10,42 @@
     * @class
 */
 
-let requestTrackerHelper = require(MODULES_BASE_PATH+"/request-tracker/helper");
-let samikshaService = require(ROOT_PATH+"/generics/services/samiksha");
+const requestTrackerHelper = require(MODULES_BASE_PATH + "/request-tracker/helper");
+const samikshaService = require(ROOT_PATH + "/generics/services/samiksha");
+const kendraService = require(ROOT_PATH  + "/generics/services/kendra");
+const userManagementService = require(ROOT_PATH + "/generics/services/user-management");
+
 
 module.exports = class PunjabMISHelper {
 
-      /**
+    /**
       * Update entity data.
       * @method
       * @name entity
       * @param {Object} requestedData - All requested data.
       * @returns {Promise} returns a promise.
-     */
+    */
 
-    static entity( requestedData , id = false ) {
+    static updateEntity( requestedData , id = false ) {
         return new Promise(async (resolve, reject) => {
             try {
-
+                
                 let entityTrackerDocument;
 
                 if( !id ) {
-                    
                     entityTrackerDocument = 
                     await _createRequestData(requestedData);
 
                     id = entityTrackerDocument._id;
                 }
-
-                let entityUpdated = await samikshaService.updateEntity(
+                
+                requestedData.body.metaInformation = await gen.utils.convertToCamelCase(requestedData.body.metaInformation);
+                
+                let entityUpdat = await samikshaService.updateEntity(
                     requestedData.body
                 );
 
-                if ( entityUpdated.status === httpStatusCode.ok.status ) {
+                if ( entityUpdat.status === httpStatusCode.ok.status ) {
 
                     entityTrackerDocument = 
                     await _updateRequestTrackerData(
@@ -51,8 +55,9 @@ module.exports = class PunjabMISHelper {
                 }
 
                 return resolve({
+                    success: true,
                     message : constants.apiResponses.UPDATED_ENTITY,
-                    result : {
+                    data : {
                         entityUpdateStatus : 
                         entityTrackerDocument && entityTrackerDocument.status ? 
                         entityTrackerDocument.status : "",
@@ -63,12 +68,15 @@ module.exports = class PunjabMISHelper {
                 });
 
             } catch (error) {
-                return reject(error);
+                return resolve({
+                    success: false,
+                    message: error.message,
+                    data: false
+                })
             }
         })
-
-
     }
+
 
      /**
       * Update user data.
@@ -78,7 +86,7 @@ module.exports = class PunjabMISHelper {
       * @returns {Promise} returns a promise.
      */
 
-    static user( requestedData, userId = false, id = false ) {
+    static updateUser( requestedData, userId = false, id = false ) {
         return new Promise(async (resolve, reject) => {
             try {
 
@@ -92,8 +100,10 @@ module.exports = class PunjabMISHelper {
                     id = userTrackerDocument._id;
 
                 }
+                
+                requestedData.body = await gen.utils.convertToCamelCase(requestedData.body);
 
-                let userUpdate = await samikshaService.userUpdate(
+                let userUpdate = await kendraService.updateUser(
                     userId ? userId : requestedData.userDetails.userId,
                     requestedData.body
                 );
@@ -108,8 +118,9 @@ module.exports = class PunjabMISHelper {
                 }
 
                 return resolve({
+                    success: true,
                     message : constants.apiResponses.UPDATED_USER,
-                    result : {
+                    data : {
                         userUpdateStatus : 
                         userTrackerDocument && userTrackerDocument.status ? 
                         userTrackerDocument.status : "",
@@ -120,16 +131,17 @@ module.exports = class PunjabMISHelper {
                 });
 
             } catch (error) {
-                return reject(error);
+                return resolve({
+                    success: false,
+                    message: error.message,
+                    data: false
+                });
             }
         })
-
-
     }
 
 
-
-     /**
+    /**
       * Create entity.
       * @method
       * @name createEntity
@@ -137,44 +149,61 @@ module.exports = class PunjabMISHelper {
       * @returns {Promise} returns a promise.
      */
 
-     static createEntity( requestedData ) {
+     static createEntity( requestedData, id = false ) {
         return new Promise(async (resolve, reject) => {
             try {
 
-                let entityTrackerDocument =  await _createRequestData(requestedData);
+                let entityTrackerDocument;
 
-                let entityCreated = await samikshaService.createEntity(
+                if( !id ) {
+                    entityTrackerDocument = 
+                    await _createRequestData(requestedData);
+
+                    id = entityTrackerDocument._id;
+                }
+                
+                requestedData.body = await gen.utils.convertToCamelCase(requestedData.body);
+
+                console.log(requestedData.body);
+                
+                let entityCreate = await samikshaService.createEntity(
                     requestedData.body
                 );
 
-                if ( entityCreated.status === httpStatusCode.ok.status ) {
+                if ( entityCreate.status === httpStatusCode.ok.status ) {
 
                     entityTrackerDocument = 
                     await _updateRequestTrackerData(
                         id
                     );
-
                 }
 
-                return resolve({});
+                return resolve({
+                    success: true,
+                    message : constants.apiResponses.CREATED_ENTITY,
+                    data : entityCreate
+                });
 
             } catch (error) {
-                return reject(error);
+                return resolve({
+                    success: false,
+                    message: error.message,
+                    data: false
+                });
             }
         })
-
-
     }
 
-     /**
-      * Update user data.
+
+    /**
+      * Create user.
       * @method
-      * @name user
+      * @name createUser
       * @param {Object} requestedData - All requested data.
       * @returns {Promise} returns a promise.
-     */
+    */
 
-    static user( requestedData, userId = false, id = false ) {
+    static createUser( requestedData, id = false ) {
         return new Promise(async (resolve, reject) => {
             try {
 
@@ -189,12 +218,11 @@ module.exports = class PunjabMISHelper {
 
                 }
 
-                let userUpdate = await samikshaService.userUpdate(
-                    userId ? userId : requestedData.userDetails.userId,
+                let userCreate = await userManagementService.createUser(
                     requestedData.body
                 );
 
-                if ( userUpdate.status === httpStatusCode.ok.status ) {
+                if ( userCreate.status === httpStatusCode.ok.status ) {
 
                     userTrackerDocument = 
                     await _updateRequestTrackerData(
@@ -204,8 +232,9 @@ module.exports = class PunjabMISHelper {
                 }
 
                 return resolve({
-                    message : constants.apiResponses.UPDATED_USER,
-                    result : {
+                    success: true,
+                    message : constants.apiResponses.CREATED_USER,
+                    data : {
                         userUpdateStatus : 
                         userTrackerDocument && userTrackerDocument.status ? 
                         userTrackerDocument.status : "",
@@ -216,7 +245,11 @@ module.exports = class PunjabMISHelper {
                 });
 
             } catch (error) {
-                return reject(error);
+                return resolve({
+                    success: false,
+                    message: error.message,
+                    data: false
+                });
             }
         })
     }

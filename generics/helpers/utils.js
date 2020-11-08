@@ -77,9 +77,22 @@ function checkIfStringIsUrl(str) {
   return pattern.test(str);
 }
 
+ /**
+  * Convert object to camelCase.
+  * @function
+  * @name convertToCamelCase
+  * @param {Object} object - input object
+  * @returns {Object} returns a camelCase object.
+*/
+
+function convertToCamelCase(inputObject) {
+  return _.mapKeys(inputObject, (v, k) => _.camelCase(k))
+}
+
 module.exports = {
   camelCaseToTitleCase : camelCaseToTitleCase,
   lowerCase : lowerCase,
   checkIfStringIsUrl : checkIfStringIsUrl,
-  hyphenCaseToCamelCase : hyphenCaseToCamelCase
+  hyphenCaseToCamelCase : hyphenCaseToCamelCase,
+  convertToCamelCase : convertToCamelCase
 };

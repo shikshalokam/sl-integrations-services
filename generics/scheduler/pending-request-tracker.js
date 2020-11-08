@@ -6,11 +6,8 @@
  */
 
 // dependencies
-const requestTrackerHelper = 
-require(ROOT_PATH + "/module/request-tracker/helper");
-
-const punjabMISHelper = 
-require(ROOT_PATH + "/module/punjab-mis/helper");
+const requestTrackerHelper = require(ROOT_PATH + "/module/request-tracker/helper");
+const punjabMISHelper = require(ROOT_PATH + "/module/punjab-mis/helper");
 
 /**
   * Cron job for pending request tracker. 
@@ -27,8 +24,7 @@ let pendingRequestTracker = function () {
     return new Promise(async (resolve, reject) => {
       try{
         
-        let pendingRequests = 
-        await requestTrackerHelper.pending();
+        let pendingRequests = await requestTrackerHelper.pending();
 
         if ( pendingRequests && pendingRequests.length > 0 ) {
           for( 
@@ -37,8 +33,7 @@ let pendingRequestTracker = function () {
             pendingRequest ++
           ) {
 
-            let url = 
-            pendingRequests[pendingRequest].metaInformation.url.split("/");
+            let url = pendingRequests[pendingRequest].metaInformation.url.split("/");
 
             let methodName = url[url.length -1];
             let metaInformation = pendingRequests[pendingRequest].metaInformation;

@@ -2,29 +2,24 @@
  * name : samiksha.js
  * author : Aman
  * Date : 24-Mar-2020
- * Description : All samiksha service related api call.
+ * Description : All samiksha service related api calls.
  */
 
 //dependencies
-
-let urlPrefix = 
-process.env.APPLICATION_BASE_HOST + 
-process.env.SAMIKSHA_BASE_URL +
-process.env.URL_PREFIX; 
-
+//let urlPrefix = process.env.APPLICATION_BASE_HOST + process.env.SAMIKSHA_BASE_URL + process.env.URL_PREFIX; 
+let urlPrefix = process.env.APPLICATION_BASE_HOST + process.env.SAMIKSHA_BASE_URL + process.env.URL_PREFIX; 
 const request = require("request");
 
 /**
-  * Get platform user roles
+  * Update entity data
   * @function
   * @name updateEntity
   * @returns {Promise} returns a promise.
 */
 
-var updateEntity = function ( data ) {
+const updateEntity = function ( data ) {
 
-    const updateEntityUrl = 
-    `${urlPrefix}${constants.endpoints.ENTITY_UPDATE}/${data.entityId}?type=${data.entityType}`;
+    const updateEntityUrl = `${urlPrefix}${constants.endpoints.ENTITY_UPDATE}/${data.entityId}?type=${data.entityType}`;
 
     let options = {
         headers: {
@@ -56,20 +51,19 @@ var updateEntity = function ( data ) {
             return reject(error);
         }
     })
-
 }
 
+
 /**
-  * Get platform user roles
+  * Create entity 
   * @function
-  * @name userUpdate
+  * @name createEntity
   * @returns {Promise} returns a promise.
 */
 
-var userUpdate = function ( userId,data ) {
+const createEntity = function ( data ) {
 
-    const updateUserUrl = 
-    `${urlPrefix}${constants.endpoints.USER_UPDATE}/${userId}`;
+    const createEntityUrl = `${urlPrefix}${constants.endpoints.ENTITY_CREATE}`;
 
     let options = {
         headers: {
@@ -82,7 +76,7 @@ var userUpdate = function ( userId,data ) {
     return new Promise(async (resolve, reject) => {
         try {
             
-            request.post(updateUserUrl,options,callback);
+            request.post(createEntityUrl,options,callback);
 
             function callback(err,data){
                 if( err ) {
@@ -92,8 +86,8 @@ var userUpdate = function ( userId,data ) {
                         constants.apiResponses.SAMIKSHA_SERVICE_SERVER_DOWN
                     });
                 } else {
-                    let entityUpdate = data.body;
-                    return resolve(entityUpdate);
+                    let entityCreate = data.body;
+                    return resolve(entityCreate);
                 }
             }
 
@@ -106,5 +100,5 @@ var userUpdate = function ( userId,data ) {
 
 module.exports = {
     updateEntity : updateEntity,
-    userUpdate : userUpdate
+    createEntity : createEntity
 };

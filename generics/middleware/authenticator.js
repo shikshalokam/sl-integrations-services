@@ -98,6 +98,12 @@ module.exports = async function (req, res, next) {
     return
   }
 
+  //Allow punjab-mis API's access without access token
+  if (req.path.includes("/punjab-mis/")) {
+    next();
+    return
+  }
+
   if (req.path.includes("keywords")) {
     if(req.headers["internal-access-token"] !== process.env.INTERNAL_ACCESS_TOKEN) {
       rspObj.errCode = reqMsg.TOKEN.MISSING_CODE;
