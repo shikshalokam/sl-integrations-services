@@ -61,16 +61,16 @@ const updateEntity = function ( data ) {
   * @returns {Promise} returns a promise.
 */
 
-const createEntity = function ( data ) {
+const createEntity = function (entityType, data ) {
 
-    const createEntityUrl = `${urlPrefix}${constants.endpoints.ENTITY_CREATE}`;
+    const createEntityUrl = `${urlPrefix}${constants.endpoints.ENTITY_CREATE}?type=${entityType}`;
 
     let options = {
         headers: {
           "content-type": "application/json",
           "internal-access-token": process.env.INTERNAL_ACCESS_TOKEN
         },
-        json: data
+        json: { data : data }
     };
     
     return new Promise(async (resolve, reject) => {

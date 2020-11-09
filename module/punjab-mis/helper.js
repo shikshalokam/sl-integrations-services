@@ -146,7 +146,7 @@ module.exports = class PunjabMISHelper {
       * @method
       * @name createEntity
       * @param {Object} requestedData - All requested data.
-      * @returns {Promise} returns a promise.
+      * @returns {Promise} returns a message.
      */
 
      static createEntity( requestedData, id = false ) {
@@ -161,12 +161,14 @@ module.exports = class PunjabMISHelper {
 
                     id = entityTrackerDocument._id;
                 }
-                
-                requestedData.body = await gen.utils.convertToCamelCase(requestedData.body);
-
-                console.log(requestedData.body);
+               
+                requestedData.body = await gen.utils.convertToCamelCase
+                ( 
+                    requestedData.body
+                );
                 
                 let entityCreate = await samikshaService.createEntity(
+                    requestedData.query.entityType,
                     requestedData.body
                 );
 
@@ -200,7 +202,7 @@ module.exports = class PunjabMISHelper {
       * @method
       * @name createUser
       * @param {Object} requestedData - All requested data.
-      * @returns {Promise} returns a promise.
+      * @returns {Promise} returns a message .
     */
 
     static createUser( requestedData, id = false ) {
