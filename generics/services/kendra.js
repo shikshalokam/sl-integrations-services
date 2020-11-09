@@ -6,8 +6,8 @@
  */
 
 //dependencies
-let urlPrefix = process.env.APPLICATION_BASE_HOST + process.env.KENDRA_BASE_URL + process.env.URL_PREFIX; 
 const request = require("request");
+let kendraServiceBaseURL = process.env.KENDRA_APPLICATION_ENDPOINT; 
 
 
 /**
@@ -19,7 +19,7 @@ const request = require("request");
 
 const updateUser = function (userId, data ) {
 
-    const updateUserUrl = `${urlPrefix}${constants.endpoints.USER_UPDATE}/${userId}`;
+    const updateUserUrl = `${kendraServiceBaseURL}${constants.endpoints.USER_UPDATE}/${userId}`;
 
     let options = {
         headers: {

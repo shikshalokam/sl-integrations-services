@@ -6,9 +6,9 @@
  */
 
 //dependencies
-//let urlPrefix = process.env.APPLICATION_BASE_HOST + process.env.SAMIKSHA_BASE_URL + process.env.URL_PREFIX; 
-let urlPrefix = process.env.APPLICATION_BASE_HOST + process.env.SAMIKSHA_BASE_URL + process.env.URL_PREFIX; 
 const request = require("request");
+let samikshaServiceBaseURL = process.env.SAMIKSHA_APPLICATION_ENDPOINT;
+
 
 /**
   * Update entity data
@@ -19,7 +19,7 @@ const request = require("request");
 
 const updateEntity = function ( data ) {
 
-    const updateEntityUrl = `${urlPrefix}${constants.endpoints.ENTITY_UPDATE}/${data.entityId}?type=${data.entityType}`;
+    const updateEntityUrl = `${samikshaServiceBaseURL}${constants.endpoints.ENTITY_UPDATE}/${data.entityId}?type=${data.entityType}`;
 
     let options = {
         headers: {
@@ -63,7 +63,7 @@ const updateEntity = function ( data ) {
 
 const createEntity = function (entityType, data ) {
 
-    const createEntityUrl = `${urlPrefix}${constants.endpoints.ENTITY_CREATE}?type=${entityType}`;
+    const createEntityUrl = `${samikshaServiceBaseURL}${constants.endpoints.ENTITY_CREATE}?type=${entityType}`;
 
     let options = {
         headers: {

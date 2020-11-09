@@ -6,7 +6,7 @@
  */
 
 //dependencies
-let urlPrefix = process.env.APPLICATION_BASE_HOST + process.env.USER_MANAGEMENT_BASE_URL + process.env.URL_PREFIX; 
+let userManagementServiceBaseURL = process.env.USER_MANAGEMENT_APPLICATION_ENDPOINT; 
 const request = require("request");
 
 
@@ -19,7 +19,7 @@ const request = require("request");
 
 const createUser = function (data) {
 
-    const createUserUrl = `${urlPrefix}${constants.endpoints.USER_CREATE}`;
+    const createUserUrl = `${userManagementServiceBaseURL}${constants.endpoints.USER_CREATE}`;
 
     let options = {
         headers: {

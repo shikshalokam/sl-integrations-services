@@ -283,8 +283,7 @@ function _createRequestData(data) {
             let requestTrackerDocument = 
             await requestTrackerHelper.create(
                 {
-                    userId : data.userDetails.userId,
-                    metaInformation : entityTracker
+                   metaInformation : entityTracker
                 }
             );
 
