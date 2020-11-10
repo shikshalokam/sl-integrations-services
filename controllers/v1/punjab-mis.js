@@ -324,7 +324,7 @@
      * @apiSampleRequest /integrations/api/v1/punjab-mis/getObservationStatus 
      * @apiParamExample {json}  Request-Body:
      * {
-     * "observationId": "",
+     * "solutionExternalId": "",
      * "staffId": "",
      * "entityId": "", 
      * }   
@@ -345,7 +345,7 @@
       * @method
       * @name getObservationStatus
       * @param  {Request} req request body.
-      * @returns {JSON} Response consists of message and status code.
+      * @returns {JSON} Response consists of message and status.
     */
 
    async getObservationStatus(req) {
@@ -355,7 +355,10 @@
 
           let result = await punjabMISHelper.getObservationStatus( req );
 
-          return resolve(result);
+          return resolve({
+              message: result.message,
+              result: result.data
+          });
 
         } catch (error) {
           reject({

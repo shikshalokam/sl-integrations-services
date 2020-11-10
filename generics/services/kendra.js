@@ -39,7 +39,7 @@ const updateUser = function (userId, data ) {
                     return resolve({
                         status : httpStatusCode.bad_request.status,
                         message : 
-                        constants.apiResponses.SAMIKSHA_SERVICE_SERVER_DOWN
+                        constants.apiResponses.KENDRA_SERVICE_SERVER_DOWN
                     });
                 } else {
                     let userUpdate = data.body;

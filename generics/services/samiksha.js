@@ -95,10 +95,55 @@ const createEntity = function (entityType, data ) {
             return reject(error);
         }
     })
+}
+
+
+/**
+  * Get observation status
+  * @function
+  * @name getObservationStatus
+  * @returns {Promise} returns a promise.
+*/
+
+const getObservationStatus = function (userId, solutionExternalId, entityId) {
+
+    const getObservationStatusUrl = `${samikshaServiceBaseURL}${constants.endpoints.GET_OBSERVATION_STATUS}${solutionExternalId}?userId=${userId}&entityId=${entityId}`;
+
+    let options = {
+        headers: {
+          "content-type": "application/json",
+          "internal-access-token": process.env.INTERNAL_ACCESS_TOKEN
+        }
+    };
+    
+    return new Promise(async (resolve, reject) => {
+        try {
+            
+            request.get(getObservationStatusUrl,options,callback);
+
+            function callback(err,data){
+                if( err ) {
+                    return resolve({
+                        status : httpStatusCode.bad_request.status,
+                        message : 
+                        constants.apiResponses.SAMIKSHA_SERVICE_SERVER_DOWN
+                    });
+                } else {
+                    let observationStatus = data.body;
+                    return resolve(observationStatus);
+                }
+            }
+
+        } catch (error) {
+            return reject(error);
+        }
+    })
 
 }
 
+
 module.exports = {
     updateEntity : updateEntity,
-    createEntity : createEntity
+    createEntity : createEntity,
+    getObservationStatus : getObservationStatus
 };

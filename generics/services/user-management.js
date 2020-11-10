@@ -39,7 +39,7 @@ const createUser = function (data) {
                     return resolve({
                         status : httpStatusCode.bad_request.status,
                         message : 
-                        constants.apiResponses.SAMIKSHA_SERVICE_SERVER_DOWN
+                        constants.apiResponses.USER_MANAGEMENT_SERVICE_SERVER_DOWN
                     });
                 } else {
                     let  userCreate = data.body;

@@ -14,6 +14,7 @@ const requestTrackerHelper = require(MODULES_BASE_PATH + "/request-tracker/helpe
 const samikshaService = require(ROOT_PATH + "/generics/services/samiksha");
 const kendraService = require(ROOT_PATH  + "/generics/services/kendra");
 const userManagementService = require(ROOT_PATH + "/generics/services/user-management");
+const sunbirdService = require(ROOT_PATH  + "/generics/services/sunbird");
 
 
 module.exports = class PunjabMISHelper {
@@ -217,20 +218,27 @@ module.exports = class PunjabMISHelper {
                     await _createRequestData(requestedData);
 
                     id = userTrackerDocument._id;
-
                 }
 
-                let userCreate = await userManagementService.createUser(
-                    requestedData.body
+                let getKeycloakAccessToken = await sunbirdService.getKeycloakToken
+                (
+                    process.env.DEFAULT_USERNAME,
+                    process.env.DEFAULT_PASSWORD
                 );
 
-                if ( userCreate.status === httpStatusCode.ok.status ) {
+                if(getKeycloakAccessToken.status == httpStatusCode.ok.status ) {
 
-                    userTrackerDocument = 
-                    await _updateRequestTrackerData(
-                        id
+                    let userCreate = await userManagementService.createUser(
+                        requestedData.body
                     );
-
+    
+                    if ( userCreate.status === httpStatusCode.ok.status ) {
+    
+                        userTrackerDocument = 
+                        await _updateRequestTrackerData(
+                            id
+                        );
+                    }    
                 }
 
                 return resolve({
@@ -245,6 +253,78 @@ module.exports = class PunjabMISHelper {
                         userTrackerDocument.remarks : "",
                     }
                 });
+
+            } catch (error) {
+                return resolve({
+                    success: false,
+                    message: error.message,
+                    data: false
+                });
+            }
+        })
+    }
+
+     
+    /**
+      * Get observation status.
+      * @method
+      * @name getObservationStatus
+      * @param {Object} requestedData - All requested data.
+      * @returns {Promise} returns a message and status.
+    */
+
+    static getObservationStatus(requestedData) {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let userId;
+
+                let getKeycloakAccessToken = await sunbirdService.getKeycloakToken
+                (
+                    process.env.DEFAULT_USERNAME,
+                    process.env.DEFAULT_PASSWORD
+                );
+
+                if(getKeycloakAccessToken.status !== httpStatusCode.ok.status) {
+                   throw new Error(constants.apiResponses.INTERNAL_ERROR)
+                }
+
+                let getUserIdByStaffId = await sunbirdService.searchUser
+                   (
+                      getKeycloakAccessToken.result.access_token,
+                      requestedData.body.staffId
+                   )
+
+                   if (getUserIdByStaffId.status ==  httpStatusCode.ok.status && 
+                       getUserIdByStaffId.result &&
+                       getUserIdByStaffId.result.content.length > 0) {
+                      
+                        userId = getUserIdByStaffId.result.content[0].id;
+                }
+
+                if (userId !== "") {
+
+                    let getObservationStatus = await samikshaService.getObservationStatus
+                    (
+                        userId,
+                        requestedData.body.solutionExternalId,
+                        requestedData.body.entityId
+                    )
+
+                    if (getObservationStatus.result == httpStatusCode.ok.status && getObservationStatus.result) {
+                        return resolve({
+                            success: true,
+                            message: constants.apiResponses.OBSERVATION_SUBMISSION_STATUS_FETCHED,
+                            data: getObservationStatus.result
+                        });
+                    }
+                    else {
+                        throw new Error(constants.apiResponses.COULD_NOT_FETCH_SUBMISSION_STATUS)
+                    }
+                }
+                else {
+                   throw new Error(constants.apiResponses.USER_NOT_FOUND)
+                }
 
             } catch (error) {
                 return resolve({
