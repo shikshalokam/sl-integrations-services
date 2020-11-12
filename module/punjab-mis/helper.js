@@ -399,9 +399,9 @@ function _keyMapping( inputObject ) {
     return new Promise(async (resolve,reject)=>{
         try {
 
-            if (inputObject.UDISE_CODE) {
+            if (inputObject.UDISE_Code) {
                 inputObject.externalId = inputObject.UDISE_Code;
-                delete inputObject.UDISE_CODE;
+                delete inputObject.UDISE_Code;
             }
 
             return inputObject;
