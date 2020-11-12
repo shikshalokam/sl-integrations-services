@@ -154,7 +154,7 @@ module.exports = class PunjabMISHelper {
                 ( 
                     requestedData.body
                 );
-                
+                console.log(requestedData.body);
                 let entityCreate = await samikshaService.createEntity(
                     requestedData.query.entityType,
                     requestedData.body
@@ -400,7 +400,7 @@ function _keyMapping( inputObject ) {
         try {
 
             if (inputObject.UDISE_CODE) {
-                inputObject.externalId = inputObject.UDISE_CODE;
+                inputObject.externalId = inputObject.UDISE_Code;
                 delete inputObject.UDISE_CODE;
             }
 
