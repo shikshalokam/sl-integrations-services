@@ -17,16 +17,16 @@ let samikshaServiceBaseURL = process.env.SAMIKSHA_APPLICATION_ENDPOINT;
   * @returns {Json} returns updated entity data.
 */
 
-const updateEntity = function ( data ) {
+const updateEntity = function ( entityId, data ) {
 
-    const updateEntityUrl = `${samikshaServiceBaseURL}${constants.endpoints.ENTITY_UPDATE}/${data.entityId}?type=${data.entityType}`;
+    const updateEntityUrl = `${samikshaServiceBaseURL}${constants.endpoints.ENTITY_UPDATE}/${entityId}?type=""`;
 
     let options = {
         headers: {
           "content-type": "application/json",
           "internal-access-token": process.env.INTERNAL_ACCESS_TOKEN
         },
-        json: data.metaInformation
+        json: data
     };
     
     return new Promise(async (resolve, reject) => {

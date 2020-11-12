@@ -22,48 +22,48 @@ module.exports = class PunjabMISHelper {
     /**
       * Update entity data.
       * @method
-      * @name entity
+      * @name updateEntity
       * @param {Object} requestedData - All requested data.
-      * @returns {Promise} returns a promise.
+      * @returns {Promise} returns a request tracker id.
     */
 
-    static updateEntity( requestedData , id = false ) {
+    static updateEntity( requestedData , id = "" ) {
         return new Promise(async (resolve, reject) => {
             try {
                 
                 let entityTrackerDocument;
 
-                if( !id ) {
+                if( id == "") {
                     entityTrackerDocument = 
                     await _createRequestData(requestedData);
 
                     id = entityTrackerDocument._id;
                 }
-                
-                requestedData.body.metaInformation = await _keyMapping(requestedData.data.metaInformation);
 
-                requestedData.body.metaInformation = await gen.utils.convertToCamelCase
+                resolve({
+                    success: true,
+                    data: {
+                        id: id
+                    }
+                })
+                
+                let entityData = await _entityKeyMapping(requestedData.body);
+
+                entityData = await gen.utils.convertToCamelCase
                 ( 
-                    requestedData.body.metaInformation
+                    entityData
                 );
                 
                 let entityUpdate = await samikshaService.updateEntity(
-                    requestedData.body
+                    req.params.id,
+                    entityData
                 );
 
                 if ( entityUpdate.status === httpStatusCode.ok.status && entityUpdate.result) {
-
-                    entityTrackerDocument = 
                     await _updateRequestTrackerData(
                         id
                     );
-
                 }
-
-                return resolve({
-                    success: true,
-                    message : constants.apiResponses.UPDATED_ENTITY
-                });
 
             } catch (error) {
                 return resolve({
@@ -81,40 +81,64 @@ module.exports = class PunjabMISHelper {
       * @method
       * @name user
       * @param {Object} requestedData - All requested data.
-      * @returns {Promise} returns a promise.
+      * @returns {Promise} returns a request tracker id.
      */
 
-    static updateUser( requestedData, userId = false, id = false ) {
+    static updateUser( requestedData, id = "" ) {
         return new Promise(async (resolve, reject) => {
             try {
 
                 let userTrackerDocument;
 
-                if( !id ) {
+                if (id == "") {
                     userTrackerDocument = 
                     await _createRequestData(requestedData);
 
                     id = userTrackerDocument._id;
                 }
-                
-                requestedData.body = await gen.utils.convertToCamelCase(requestedData.body);
 
-                let userUpdate = await kendraService.updateUser(
-                    userId ? userId : requestedData.params.userId,
-                    requestedData.body
+                resolve({
+                    success: true,
+                    data: {
+                        id: id
+                    }
+                })
+
+                let getKeycloakAccessToken = await sunbirdService.getKeycloakToken
+                (
+                    process.env.DEFAULT_USERNAME,
+                    process.env.DEFAULT_PASSWORD
                 );
 
-                if ( userUpdate.status === httpStatusCode.ok.status ) {
-                    userTrackerDocument = 
-                    await _updateRequestTrackerData(
-                        id
-                    );
-                }
+                if (getKeycloakAccessToken.status == httpStatusCode.ok.status) {
 
-                return resolve({
-                    success: true,
-                    message : constants.apiResponses.UPDATED_USER
-                });
+                    let getUserIdByFacultyId = await sunbirdService.searchUser
+                    (
+                        getKeycloakAccessToken.result.access_token,
+                        requestedData.params.id
+                    )
+
+                    if (getUserIdByFacultyId.status == httpStatusCode.ok.status &&
+                        getUserIdByFacultyId.result &&
+                        getUserIdByFacultyId.result.content.length > 0) {
+
+                        userId = getUserIdByFacultyId.result.content[0].id;
+
+                        requestedData.body = await gen.utils.convertToCamelCase(requestedData.body);
+
+                        let userUpdate = await kendraService.updateUser(
+                            userId,
+                            requestedData.body
+                        );
+
+                        if (userUpdate.status === httpStatusCode.ok.status) {
+                            await _updateRequestTrackerData
+                            (
+                                id
+                            );
+                        }
+                    }
+                }
 
             } catch (error) {
                 return resolve({
@@ -132,46 +156,46 @@ module.exports = class PunjabMISHelper {
       * @method
       * @name createEntity
       * @param {Object} requestedData - All requested data.
-      * @returns {Promise} returns a message.
+      * @returns {Promise} returns a request tracker id.
      */
 
-     static createEntity( requestedData, id = false ) {
+     static createEntity( requestedData, id = "" ) {
         return new Promise(async (resolve, reject) => {
             try {
 
                 let entityTrackerDocument;
 
-                if( !id ) {
+                if(id == "" ) {
                     entityTrackerDocument = 
                     await _createRequestData(requestedData);
 
                     id = entityTrackerDocument._id;
                 }
 
-                requestedData.body = await _keyMapping(requestedData.body);
-               
-                requestedData.body = await gen.utils.convertToCamelCase
+                resolve({
+                    success: true,
+                    data: {
+                        id: id
+                    }
+                })
+              
+                let entityData = await _entityKeyMapping(requestedData.body);
+
+                entityData = await gen.utils.convertToCamelCase
                 ( 
-                    requestedData.body
+                    entityData
                 );
-                console.log(requestedData.body);
+               
                 let entityCreate = await samikshaService.createEntity(
                     requestedData.query.entityType,
                     requestedData.body
                 );
 
                 if ( entityCreate.status === httpStatusCode.ok.status && entityCreate.result ) {
-
-                    entityTrackerDocument = 
                     await _updateRequestTrackerData(
                         id
                     );
                 }
-
-                return resolve({
-                    success: true,
-                    message : constants.apiResponses.CREATED_ENTITY
-                });
 
             } catch (error) {
                 return resolve({
@@ -189,22 +213,29 @@ module.exports = class PunjabMISHelper {
       * @method
       * @name createUser
       * @param {Object} requestedData - All requested data.
-      * @returns {Promise} returns a message .
+      * @returns {Promise} returns a request tracker id.
     */
 
-    static createUser( requestedData, id = false ) {
+    static createUser( requestedData, id = "" ) {
         return new Promise(async (resolve, reject) => {
             try {
 
                 let userTrackerDocument;
 
-                if(!id) {
+                if(id == "") {
                     
                     userTrackerDocument = 
                     await _createRequestData(requestedData);
 
                     id = userTrackerDocument._id;
                 }
+
+                resolve({
+                    success: true,
+                    data: {
+                        id: id
+                    }
+                })
 
                 let getKeycloakAccessToken = await sunbirdService.getKeycloakToken
                 (
@@ -214,24 +245,19 @@ module.exports = class PunjabMISHelper {
 
                 if(getKeycloakAccessToken.status == httpStatusCode.ok.status ) {
 
+                    requestedData.body = await gen.utils.convertToCamelCase(requestedData.body);
+
                     let userCreate = await userManagementService.createUser(
                         getKeycloakAccessToken.result.access_token,
                         requestedData.body
                     );
     
                     if ( userCreate.status === httpStatusCode.ok.status && userCreate.result ) {
-    
-                        userTrackerDocument = 
                         await _updateRequestTrackerData(
                             id
                         );
                     }    
                 }
-
-                return resolve({
-                    success: true,
-                    message : constants.apiResponses.CREATED_USER
-                });
 
             } catch (error) {
                 return resolve({
@@ -388,23 +414,48 @@ function _updateRequestTrackerData( id ) {
 
 
 /**
- * Punjab-mis to samiksha key mapping
+ * Punjab-mis to samiksha entity key mapping
  * @method
- * @name _keyMapping
+ * @name _entityKeyMapping
  * @param {Object} inputObject - input data.
  * @returns {Object} - Mapped object keys.
 */
 
-function _keyMapping( inputObject ) {
+function _entityKeyMapping( inputObject ) {
     return new Promise(async (resolve,reject)=>{
         try {
-
+           
             if (inputObject.UDISE_Code) {
                 inputObject.externalId = inputObject.UDISE_Code;
                 delete inputObject.UDISE_Code;
             }
+            
+            return resolve(inputObject);
+         
+        } catch(error){
+            return reject(error);
+        }
+    })
+}
 
-            return inputObject;
+
+/**
+ * Punjab-mis to samiksha user data key mapping
+ * @method
+ * @name _userKeyMapping
+ * @param {Object} inputObject - input data.
+ * @returns {Object} - Mapped object keys.
+*/
+
+function _userKeyMapping( inputObject ) {
+    return new Promise(async (resolve,reject)=>{
+        try {
+           
+           let userData = {
+
+           }
+            
+           return resolve(inputObject);
          
         } catch(error){
             return reject(error);

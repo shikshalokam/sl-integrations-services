@@ -140,8 +140,47 @@ module.exports = class RequestTrackerHelper {
                 return reject(error);
             }
         })
+    }
 
 
+    /**
+      * Get status of request data.
+      * @method
+      * @name status
+      * @param {id} id - request tacker id
+      * @returns {Array} returns message and status.
+     */
+
+    static status(id= "") {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                if (id == "") {
+                    throw new Error(constants.apiResponses.ID_REQUIRED)
+                }
+                
+                let requestTrackerDocument = await this.list
+                (
+                   {
+                    _id : id
+                   },
+                   ["status"]
+                );
+
+                return resolve({
+                    success: true,
+                    message: constants.apiResponses.STATUS_FETCHED,
+                    data: requestTrackerDocument[0]
+                });
+
+            } catch (error) {
+                return resolve({
+                    success: false,
+                    message: error.message,
+                    data: false
+                });
+            }
+        })
     }
 
 }

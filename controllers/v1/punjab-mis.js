@@ -13,9 +13,10 @@
      * @class
  */
  module.exports = class PunjabMIS extends Abstract {
-   constructor() {
-     super(schemas["request-tracker"])
-   }
+   
+  constructor() {
+    super(schemas["request-tracker"]);
+  }
  
    static get name() {
      return "punjabMis";
@@ -73,8 +74,11 @@
      * }
      * @apiParamExample {json} Response :
      * {
-     *   "message": "Created entity successfully",
-     *   "status": 200
+     *   "message": "",
+     *   "status": 200,
+     *   "result": {
+     *       "id": "5bfe53ea1d0c350d61b78d0a"
+     *   }
      * }
      * @apiUse successBody
      * @apiUse errorBody
@@ -92,14 +96,15 @@
     return new Promise(async (resolve, reject) => {
 
       try {
-
+        
         let entityCreateDocument = await punjabMISHelper.createEntity
         ( 
           req
         );
 
         return resolve({
-            message: entityCreateDocument.message
+            message: entityCreateDocument.message,
+            result: entityCreateDocument.data
         });
 
       } catch (error) {
@@ -118,16 +123,13 @@
 
 
    /**
-     * @api {post} /integrations/api/v1/punjab-mis/updateEntity 
+     * @api {post} /integrations/api/v1/punjab-mis/updateEntity/{{entityId}}
      * Update entity data
      * @apiVersion 1.0.0
      * @apiGroup Punjab-MIS
-     * @apiSampleRequest /integrations/api/v1/punjab-mis/updateEntity    
+     * @apiSampleRequest /integrations/api/v1/punjab-mis/updateEntity/345675   
      * @apiParamExample {json}  Request-Body:
      * {
-     * "entityId": "",
-     * "entityType": "",
-     * "metaInformation" : {
      *   "School_Code": "",
      *   "School_Name" : "",
      *   "UDISE_Code": "",
@@ -155,13 +157,15 @@
      *   "IsVocational_School": "",
      *   "MDM_SchoolCategory_Code": "",
      *   "MDM_VILLAGE_CODE": "",
-     *   "MDM_Source": "",
-     * }
+     *   "MDM_Source": ""
      * }
      * @apiParamExample {json} Response :
      * {
-     * "message": "Updated entity data successfully",
-     * "status": 200
+     *   "message": "",
+     *   "status": 200,
+     *   "result": {
+     *       "id": "5bfe53ea1d0c350d61b78d0a"
+     *   }
      * }
      * @apiUse successBody
      * @apiUse errorBody
@@ -223,7 +227,10 @@
      * @apiParamExample {json} Response :
      * {
      * "message": "Created the user successfully",
-     * "status": 200
+     * "status": 200,
+     * "result": {
+     *    "id": "5bfe53ea1d0c350d61b78d0a"
+     * }
      * }
      * @apiUse successBody
      * @apiUse errorBody
@@ -283,8 +290,11 @@
      * }
      * @apiParamExample {json} Response :
      * {
-     * "message": "Updated user data successfully",
-     * "status": 200
+     * "message": "",
+     * "status": 200,
+     * "result": {
+     *    "id": "5bfe53ea1d0c350d61b78d0a"
+     * }
      * }
      * @apiUse successBody
      * @apiUse errorBody
@@ -328,7 +338,7 @@
 
 
  
-   /**
+  /**
      * @api {post} /integrations/api/v1/punjab-mis/getObservationStatus
      * Get observation status  
      * @apiVersion 1.0.0
@@ -390,5 +400,6 @@
       })
   }
 
- };
+
+};
  

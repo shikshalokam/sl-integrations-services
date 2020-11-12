@@ -18,5 +18,7 @@ module.exports = {
     "INTERNAL_ERROR" : "Internal server error",
     "OBSERVATION_SUBMISSION_STATUS_FETCHED" : "Observation submission status fetched successfully",
     "COULD_NOT_FETCH_SUBMISSION_STATUS" : "Could not fetch observation submission status",
-    "USER_NOT_FOUND" : "User not found"
+    "USER_NOT_FOUND" : "User not found",
+    "STATUS_FETCHED" : "Status fetched successfully",
+    "ID_REQUIRED" : "Id is required"
 };
