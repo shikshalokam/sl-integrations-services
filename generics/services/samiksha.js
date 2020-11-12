@@ -14,7 +14,7 @@ let samikshaServiceBaseURL = process.env.SAMIKSHA_APPLICATION_ENDPOINT;
   * Update entity data
   * @function
   * @name updateEntity
-  * @returns {Promise} returns a promise.
+  * @returns {Json} returns updated entity data.
 */
 
 const updateEntity = function ( data ) {
@@ -58,7 +58,7 @@ const updateEntity = function ( data ) {
   * Create entity 
   * @function
   * @name createEntity
-  * @returns {Promise} returns a promise.
+  * @returns {Json} returns created entity data.
 */
 
 const createEntity = function (entityType, data ) {
@@ -130,7 +130,7 @@ const getObservationStatus = function (userId, solutionExternalId, entityId) {
                     });
                 } else {
                     let observationStatus = data.body;
-                    return resolve(observationStatus);
+                    return resolve(JSON.parse(observationStatus));
                 }
             }
 

@@ -46,19 +46,31 @@ let pendingRequestTracker = function () {
            
             if( methodName === constants.common.ENTITY_UPDATE ) {
 
-              await punjabMISHelper.entityUpdate(
+              await punjabMISHelper.updateEntity(
                 metaInformation,
                 requestTrackerId
               );
 
             } else if( methodName === constants.common.USER_UPDATE ) {
 
-              await punjabMISHelper.userUpdate(
+              await punjabMISHelper.updateUser(
                 metaInformation,
                 pendingRequests[pendingRequest].userId,
                 requestTrackerId
               );
+            } else if (methodName == constants.common.ENTITY_CREATE) {
 
+              await punjabMISHelper.createEntity(
+                metaInformation,
+                requestTrackerId
+              );
+
+            } else if (methodName == constants.common.USER_CREATE) {
+
+              await punjabMISHelper.createUser(
+                metaInformation,
+                requestTrackerId
+              );
             }
             
           }

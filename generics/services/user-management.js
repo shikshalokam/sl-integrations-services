@@ -14,16 +14,17 @@ const request = require("request");
   * Create user
   * @function
   * @name createUser
-  * @returns {Promise} returns a promise.
+  * @returns {JSON} returns response of API.
 */
 
-const createUser = function (data) {
+const createUser = function (token, data) {
 
     const createUserUrl = `${userManagementServiceBaseURL}${constants.endpoints.USER_CREATE}`;
 
     let options = {
         headers: {
           "content-type": "application/json",
+          "X-authenticated-user-token": token,
           "internal-access-token": process.env.INTERNAL_ACCESS_TOKEN
         },
         json: data

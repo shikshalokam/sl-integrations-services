@@ -93,9 +93,14 @@
 
       try {
 
-        let entityCreateDocument = await punjabMISHelper.createEntity( req );
+        let entityCreateDocument = await punjabMISHelper.createEntity
+        ( 
+          req
+        );
 
-        return resolve(entityCreateDocument);
+        return resolve({
+            message: entityCreateDocument.message
+        });
 
       } catch (error) {
         reject({
@@ -237,9 +242,14 @@
 
         try {
 
-          let userDocument = await punjabMISHelper.createUser( req );
+          let userDocument = await punjabMISHelper.createUser
+          (
+            req 
+          );
 
-          return resolve(userDocument);
+          return resolve({
+             message: userDocument.message
+          });
 
         } catch (error) {
           reject({
@@ -257,7 +267,7 @@
 
 
    /**
-     * @api {post} /integrations/api/v1/punjab-mis/updateUser 
+     * @api {post} /integrations/api/v1/punjab-mis/updateUser/{{userId}}
      * Update user data
      * @apiVersion 1.0.0
      * @apiGroup Punjab-MIS
@@ -273,7 +283,7 @@
      * }
      * @apiParamExample {json} Response :
      * {
-     * "message": "Updated entity data",
+     * "message": "Updated user data successfully",
      * "status": 200
      * }
      * @apiUse successBody
@@ -298,7 +308,9 @@
             req 
           );
 
-          return resolve(userUpdateDocument);
+          return resolve({
+            message: userUpdateDocument.message
+          });
 
         } catch (error) {
           reject({
@@ -333,7 +345,8 @@
      * "message": "Observation status fetched for the given entity",
      * "status": 200,
      * "result": {
-     *     "status" : "completed"
+     *     "status" : "completed",
+     *     "createdAt": "2020-09-23T09:04:06.316Z"
      * }
      * }
      * @apiUse successBody
@@ -353,7 +366,10 @@
 
         try {
 
-          let result = await punjabMISHelper.getObservationStatus( req );
+          let result = await punjabMISHelper.getObservationStatus
+          ( 
+            req 
+          );
 
           return resolve({
               message: result.message,

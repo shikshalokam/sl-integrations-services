@@ -40,13 +40,18 @@ module.exports = class PunjabMISHelper {
                     id = entityTrackerDocument._id;
                 }
                 
-                requestedData.body.metaInformation = await gen.utils.convertToCamelCase(requestedData.body.metaInformation);
+                requestedData.body.metaInformation = await _keyMapping(requestedData.data.metaInformation);
+
+                requestedData.body.metaInformation = await gen.utils.convertToCamelCase
+                ( 
+                    requestedData.body.metaInformation
+                );
                 
-                let entityUpdat = await samikshaService.updateEntity(
+                let entityUpdate = await samikshaService.updateEntity(
                     requestedData.body
                 );
 
-                if ( entityUpdat.status === httpStatusCode.ok.status ) {
+                if ( entityUpdate.status === httpStatusCode.ok.status && entityUpdate.result) {
 
                     entityTrackerDocument = 
                     await _updateRequestTrackerData(
@@ -57,15 +62,7 @@ module.exports = class PunjabMISHelper {
 
                 return resolve({
                     success: true,
-                    message : constants.apiResponses.UPDATED_ENTITY,
-                    data : {
-                        entityUpdateStatus : 
-                        entityTrackerDocument && entityTrackerDocument.status ? 
-                        entityTrackerDocument.status : "",
-                        entityUpdateRemarks : 
-                        entityTrackerDocument && entityTrackerDocument.remarks ?
-                        entityTrackerDocument.remarks : "",
-                    }
+                    message : constants.apiResponses.UPDATED_ENTITY
                 });
 
             } catch (error) {
@@ -94,41 +91,29 @@ module.exports = class PunjabMISHelper {
                 let userTrackerDocument;
 
                 if( !id ) {
-                    
                     userTrackerDocument = 
                     await _createRequestData(requestedData);
 
                     id = userTrackerDocument._id;
-
                 }
                 
                 requestedData.body = await gen.utils.convertToCamelCase(requestedData.body);
 
                 let userUpdate = await kendraService.updateUser(
-                    userId ? userId : requestedData.userDetails.userId,
+                    userId ? userId : requestedData.params.userId,
                     requestedData.body
                 );
 
                 if ( userUpdate.status === httpStatusCode.ok.status ) {
-
                     userTrackerDocument = 
                     await _updateRequestTrackerData(
                         id
                     );
-
                 }
 
                 return resolve({
                     success: true,
-                    message : constants.apiResponses.UPDATED_USER,
-                    data : {
-                        userUpdateStatus : 
-                        userTrackerDocument && userTrackerDocument.status ? 
-                        userTrackerDocument.status : "",
-                        entityUpdateRemarks : 
-                        userTrackerDocument && userTrackerDocument.remarks ?
-                        userTrackerDocument.remarks : "",
-                    }
+                    message : constants.apiResponses.UPDATED_USER
                 });
 
             } catch (error) {
@@ -162,6 +147,8 @@ module.exports = class PunjabMISHelper {
 
                     id = entityTrackerDocument._id;
                 }
+
+                requestedData.body = await _keyMapping(requestedData.body);
                
                 requestedData.body = await gen.utils.convertToCamelCase
                 ( 
@@ -173,7 +160,7 @@ module.exports = class PunjabMISHelper {
                     requestedData.body
                 );
 
-                if ( entityCreate.status === httpStatusCode.ok.status ) {
+                if ( entityCreate.status === httpStatusCode.ok.status && entityCreate.result ) {
 
                     entityTrackerDocument = 
                     await _updateRequestTrackerData(
@@ -183,8 +170,7 @@ module.exports = class PunjabMISHelper {
 
                 return resolve({
                     success: true,
-                    message : constants.apiResponses.CREATED_ENTITY,
-                    data : entityCreate
+                    message : constants.apiResponses.CREATED_ENTITY
                 });
 
             } catch (error) {
@@ -212,7 +198,7 @@ module.exports = class PunjabMISHelper {
 
                 let userTrackerDocument;
 
-                if( !id ) {
+                if(!id) {
                     
                     userTrackerDocument = 
                     await _createRequestData(requestedData);
@@ -229,10 +215,11 @@ module.exports = class PunjabMISHelper {
                 if(getKeycloakAccessToken.status == httpStatusCode.ok.status ) {
 
                     let userCreate = await userManagementService.createUser(
+                        getKeycloakAccessToken.result.access_token,
                         requestedData.body
                     );
     
-                    if ( userCreate.status === httpStatusCode.ok.status ) {
+                    if ( userCreate.status === httpStatusCode.ok.status && userCreate.result ) {
     
                         userTrackerDocument = 
                         await _updateRequestTrackerData(
@@ -243,15 +230,7 @@ module.exports = class PunjabMISHelper {
 
                 return resolve({
                     success: true,
-                    message : constants.apiResponses.CREATED_USER,
-                    data : {
-                        userUpdateStatus : 
-                        userTrackerDocument && userTrackerDocument.status ? 
-                        userTrackerDocument.status : "",
-                        entityUpdateRemarks : 
-                        userTrackerDocument && userTrackerDocument.remarks ?
-                        userTrackerDocument.remarks : "",
-                    }
+                    message : constants.apiResponses.CREATED_USER
                 });
 
             } catch (error) {
@@ -311,7 +290,7 @@ module.exports = class PunjabMISHelper {
                         requestedData.body.entityId
                     )
 
-                    if (getObservationStatus.result == httpStatusCode.ok.status && getObservationStatus.result) {
+                    if (getObservationStatus.status == httpStatusCode.ok.status && getObservationStatus.result) {
                         return resolve({
                             success: true,
                             message: constants.apiResponses.OBSERVATION_SUBMISSION_STATUS_FETCHED,
@@ -405,5 +384,30 @@ function _updateRequestTrackerData( id ) {
             return reject(error);
         }
     })
+}
 
+
+/**
+ * Punjab-mis to samiksha key mapping
+ * @method
+ * @name _keyMapping
+ * @param {Object} inputObject - input data.
+ * @returns {Object} - Mapped object keys.
+*/
+
+function _keyMapping( inputObject ) {
+    return new Promise(async (resolve,reject)=>{
+        try {
+
+            if (inputObject.UDISE_CODE) {
+                inputObject.externalId = inputObject.UDISE_CODE;
+                delete inputObject.UDISE_CODE;
+            }
+
+            return inputObject;
+         
+        } catch(error){
+            return reject(error);
+        }
+    })
 }
