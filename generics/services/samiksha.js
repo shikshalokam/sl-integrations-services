@@ -2,29 +2,24 @@
  * name : samiksha.js
  * author : Aman
  * Date : 24-Mar-2020
- * Description : All samiksha service related api call.
+ * Description : All samiksha service related api calls.
  */
 
 //dependencies
-
-let urlPrefix = 
-process.env.APPLICATION_BASE_HOST + 
-process.env.SAMIKSHA_BASE_URL +
-process.env.URL_PREFIX; 
-
 const request = require("request");
+let samikshaServiceBaseURL = process.env.SAMIKSHA_APPLICATION_ENDPOINT;
+
 
 /**
-  * Get platform user roles
+  * Update entity data
   * @function
   * @name updateEntity
-  * @returns {Promise} returns a promise.
+  * @returns {Json} returns updated entity data.
 */
 
-var updateEntity = function ( data ) {
+const updateEntity = function ( data ) {
 
-    const updateEntityUrl = 
-    `${urlPrefix}${constants.endpoints.ENTITY_UPDATE}/${data.entityId}?type=${data.entityType}`;
+    const updateEntityUrl = `${samikshaServiceBaseURL}${constants.endpoints.ENTITY_UPDATE}/${data.entityId}?type=${data.entityType}`;
 
     let options = {
         headers: {
@@ -56,33 +51,32 @@ var updateEntity = function ( data ) {
             return reject(error);
         }
     })
-
 }
 
+
 /**
-  * Get platform user roles
+  * Create entity 
   * @function
-  * @name userUpdate
-  * @returns {Promise} returns a promise.
+  * @name createEntity
+  * @returns {Json} returns created entity data.
 */
 
-var userUpdate = function ( userId,data ) {
+const createEntity = function (entityType, data ) {
 
-    const updateUserUrl = 
-    `${urlPrefix}${constants.endpoints.USER_UPDATE}/${userId}`;
+    const createEntityUrl = `${samikshaServiceBaseURL}${constants.endpoints.ENTITY_CREATE}?type=${entityType}`;
 
     let options = {
         headers: {
           "content-type": "application/json",
           "internal-access-token": process.env.INTERNAL_ACCESS_TOKEN
         },
-        json: data
+        json: { data : data }
     };
     
     return new Promise(async (resolve, reject) => {
         try {
             
-            request.post(updateUserUrl,options,callback);
+            request.post(createEntityUrl,options,callback);
 
             function callback(err,data){
                 if( err ) {
@@ -92,8 +86,51 @@ var userUpdate = function ( userId,data ) {
                         constants.apiResponses.SAMIKSHA_SERVICE_SERVER_DOWN
                     });
                 } else {
-                    let entityUpdate = data.body;
-                    return resolve(entityUpdate);
+                    let entityCreate = data.body;
+                    return resolve(entityCreate);
+                }
+            }
+
+        } catch (error) {
+            return reject(error);
+        }
+    })
+}
+
+
+/**
+  * Get observation status
+  * @function
+  * @name getObservationStatus
+  * @returns {Promise} returns a promise.
+*/
+
+const getObservationStatus = function (userId, solutionExternalId, entityId) {
+
+    const getObservationStatusUrl = `${samikshaServiceBaseURL}${constants.endpoints.GET_OBSERVATION_STATUS}${solutionExternalId}?userId=${userId}&entityId=${entityId}`;
+
+    let options = {
+        headers: {
+          "content-type": "application/json",
+          "internal-access-token": process.env.INTERNAL_ACCESS_TOKEN
+        }
+    };
+    
+    return new Promise(async (resolve, reject) => {
+        try {
+            
+            request.get(getObservationStatusUrl,options,callback);
+
+            function callback(err,data){
+                if( err ) {
+                    return resolve({
+                        status : httpStatusCode.bad_request.status,
+                        message : 
+                        constants.apiResponses.SAMIKSHA_SERVICE_SERVER_DOWN
+                    });
+                } else {
+                    let observationStatus = data.body;
+                    return resolve(JSON.parse(observationStatus));
                 }
             }
 
@@ -104,7 +141,9 @@ var userUpdate = function ( userId,data ) {
 
 }
 
+
 module.exports = {
     updateEntity : updateEntity,
-    userUpdate : userUpdate
+    createEntity : createEntity,
+    getObservationStatus : getObservationStatus
 };

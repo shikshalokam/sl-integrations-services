@@ -10,38 +10,48 @@
     * @class
 */
 
-let requestTrackerHelper = require(MODULES_BASE_PATH+"/request-tracker/helper");
-let samikshaService = require(ROOT_PATH+"/generics/services/samiksha");
+const requestTrackerHelper = require(MODULES_BASE_PATH + "/request-tracker/helper");
+const samikshaService = require(ROOT_PATH + "/generics/services/samiksha");
+const kendraService = require(ROOT_PATH  + "/generics/services/kendra");
+const userManagementService = require(ROOT_PATH + "/generics/services/user-management");
+const sunbirdService = require(ROOT_PATH  + "/generics/services/sunbird");
+
 
 module.exports = class PunjabMISHelper {
 
-      /**
+    /**
       * Update entity data.
       * @method
       * @name entity
       * @param {Object} requestedData - All requested data.
       * @returns {Promise} returns a promise.
-     */
+    */
 
-    static entity( requestedData , id = false ) {
+    static updateEntity( requestedData , id = false ) {
         return new Promise(async (resolve, reject) => {
             try {
-
+                
                 let entityTrackerDocument;
 
                 if( !id ) {
-                    
                     entityTrackerDocument = 
                     await _createRequestData(requestedData);
 
                     id = entityTrackerDocument._id;
                 }
+                
+                requestedData.body.metaInformation = await _keyMapping(requestedData.data.metaInformation);
 
-                let entityUpdated = await samikshaService.updateEntity(
+                requestedData.body.metaInformation = await gen.utils.convertToCamelCase
+                ( 
+                    requestedData.body.metaInformation
+                );
+                
+                let entityUpdate = await samikshaService.updateEntity(
                     requestedData.body
                 );
 
-                if ( entityUpdated.status === httpStatusCode.ok.status ) {
+                if ( entityUpdate.status === httpStatusCode.ok.status && entityUpdate.result) {
 
                     entityTrackerDocument = 
                     await _updateRequestTrackerData(
@@ -51,24 +61,20 @@ module.exports = class PunjabMISHelper {
                 }
 
                 return resolve({
-                    message : constants.apiResponses.UPDATED_ENTITY,
-                    result : {
-                        entityUpdateStatus : 
-                        entityTrackerDocument && entityTrackerDocument.status ? 
-                        entityTrackerDocument.status : "",
-                        entityUpdateRemarks : 
-                        entityTrackerDocument && entityTrackerDocument.remarks ?
-                        entityTrackerDocument.remarks : "",
-                    }
+                    success: true,
+                    message : constants.apiResponses.UPDATED_ENTITY
                 });
 
             } catch (error) {
-                return reject(error);
+                return resolve({
+                    success: false,
+                    message: error.message,
+                    data: false
+                })
             }
         })
-
-
     }
+
 
      /**
       * Update user data.
@@ -78,53 +84,235 @@ module.exports = class PunjabMISHelper {
       * @returns {Promise} returns a promise.
      */
 
-    static user( requestedData, userId = false, id = false ) {
+    static updateUser( requestedData, userId = false, id = false ) {
         return new Promise(async (resolve, reject) => {
             try {
 
                 let userTrackerDocument;
 
                 if( !id ) {
+                    userTrackerDocument = 
+                    await _createRequestData(requestedData);
+
+                    id = userTrackerDocument._id;
+                }
+                
+                requestedData.body = await gen.utils.convertToCamelCase(requestedData.body);
+
+                let userUpdate = await kendraService.updateUser(
+                    userId ? userId : requestedData.params.userId,
+                    requestedData.body
+                );
+
+                if ( userUpdate.status === httpStatusCode.ok.status ) {
+                    userTrackerDocument = 
+                    await _updateRequestTrackerData(
+                        id
+                    );
+                }
+
+                return resolve({
+                    success: true,
+                    message : constants.apiResponses.UPDATED_USER
+                });
+
+            } catch (error) {
+                return resolve({
+                    success: false,
+                    message: error.message,
+                    data: false
+                });
+            }
+        })
+    }
+
+
+    /**
+      * Create entity.
+      * @method
+      * @name createEntity
+      * @param {Object} requestedData - All requested data.
+      * @returns {Promise} returns a message.
+     */
+
+     static createEntity( requestedData, id = false ) {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let entityTrackerDocument;
+
+                if( !id ) {
+                    entityTrackerDocument = 
+                    await _createRequestData(requestedData);
+
+                    id = entityTrackerDocument._id;
+                }
+
+                requestedData.body = await _keyMapping(requestedData.body);
+               
+                requestedData.body = await gen.utils.convertToCamelCase
+                ( 
+                    requestedData.body
+                );
+                
+                let entityCreate = await samikshaService.createEntity(
+                    requestedData.query.entityType,
+                    requestedData.body
+                );
+
+                if ( entityCreate.status === httpStatusCode.ok.status && entityCreate.result ) {
+
+                    entityTrackerDocument = 
+                    await _updateRequestTrackerData(
+                        id
+                    );
+                }
+
+                return resolve({
+                    success: true,
+                    message : constants.apiResponses.CREATED_ENTITY
+                });
+
+            } catch (error) {
+                return resolve({
+                    success: false,
+                    message: error.message,
+                    data: false
+                });
+            }
+        })
+    }
+
+
+    /**
+      * Create user.
+      * @method
+      * @name createUser
+      * @param {Object} requestedData - All requested data.
+      * @returns {Promise} returns a message .
+    */
+
+    static createUser( requestedData, id = false ) {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let userTrackerDocument;
+
+                if(!id) {
                     
                     userTrackerDocument = 
                     await _createRequestData(requestedData);
 
                     id = userTrackerDocument._id;
-
                 }
 
-                let userUpdate = await samikshaService.userUpdate(
-                    userId ? userId : requestedData.userDetails.userId,
-                    requestedData.body
+                let getKeycloakAccessToken = await sunbirdService.getKeycloakToken
+                (
+                    process.env.DEFAULT_USERNAME,
+                    process.env.DEFAULT_PASSWORD
                 );
 
-                if ( userUpdate.status === httpStatusCode.ok.status ) {
+                if(getKeycloakAccessToken.status == httpStatusCode.ok.status ) {
 
-                    userTrackerDocument = 
-                    await _updateRequestTrackerData(
-                        id
+                    let userCreate = await userManagementService.createUser(
+                        getKeycloakAccessToken.result.access_token,
+                        requestedData.body
                     );
-
+    
+                    if ( userCreate.status === httpStatusCode.ok.status && userCreate.result ) {
+    
+                        userTrackerDocument = 
+                        await _updateRequestTrackerData(
+                            id
+                        );
+                    }    
                 }
 
                 return resolve({
-                    message : constants.apiResponses.UPDATED_USER,
-                    result : {
-                        userUpdateStatus : 
-                        userTrackerDocument && userTrackerDocument.status ? 
-                        userTrackerDocument.status : "",
-                        entityUpdateRemarks : 
-                        userTrackerDocument && userTrackerDocument.remarks ?
-                        userTrackerDocument.remarks : "",
-                    }
+                    success: true,
+                    message : constants.apiResponses.CREATED_USER
                 });
 
             } catch (error) {
-                return reject(error);
+                return resolve({
+                    success: false,
+                    message: error.message,
+                    data: false
+                });
             }
         })
+    }
 
+     
+    /**
+      * Get observation status.
+      * @method
+      * @name getObservationStatus
+      * @param {Object} requestedData - All requested data.
+      * @returns {Promise} returns a message and status.
+    */
 
+    static getObservationStatus(requestedData) {
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                let userId;
+
+                let getKeycloakAccessToken = await sunbirdService.getKeycloakToken
+                (
+                    process.env.DEFAULT_USERNAME,
+                    process.env.DEFAULT_PASSWORD
+                );
+
+                if(getKeycloakAccessToken.status !== httpStatusCode.ok.status) {
+                   throw new Error(constants.apiResponses.INTERNAL_ERROR)
+                }
+
+                let getUserIdByStaffId = await sunbirdService.searchUser
+                   (
+                      getKeycloakAccessToken.result.access_token,
+                      requestedData.body.staffId
+                   )
+
+                   if (getUserIdByStaffId.status ==  httpStatusCode.ok.status && 
+                       getUserIdByStaffId.result &&
+                       getUserIdByStaffId.result.content.length > 0) {
+                      
+                        userId = getUserIdByStaffId.result.content[0].id;
+                }
+
+                if (userId !== "") {
+
+                    let getObservationStatus = await samikshaService.getObservationStatus
+                    (
+                        userId,
+                        requestedData.body.solutionExternalId,
+                        requestedData.body.entityId
+                    )
+
+                    if (getObservationStatus.status == httpStatusCode.ok.status && getObservationStatus.result) {
+                        return resolve({
+                            success: true,
+                            message: constants.apiResponses.OBSERVATION_SUBMISSION_STATUS_FETCHED,
+                            data: getObservationStatus.result
+                        });
+                    }
+                    else {
+                        throw new Error(constants.apiResponses.COULD_NOT_FETCH_SUBMISSION_STATUS)
+                    }
+                }
+                else {
+                   throw new Error(constants.apiResponses.USER_NOT_FOUND)
+                }
+
+            } catch (error) {
+                return resolve({
+                    success: false,
+                    message: error.message,
+                    data: false
+                });
+            }
+        })
     }
 
 }
@@ -154,8 +342,7 @@ function _createRequestData(data) {
             let requestTrackerDocument = 
             await requestTrackerHelper.create(
                 {
-                    userId : data.userDetails.userId,
-                    metaInformation : entityTracker
+                   metaInformation : entityTracker
                 }
             );
 
@@ -197,5 +384,30 @@ function _updateRequestTrackerData( id ) {
             return reject(error);
         }
     })
+}
 
+
+/**
+ * Punjab-mis to samiksha key mapping
+ * @method
+ * @name _keyMapping
+ * @param {Object} inputObject - input data.
+ * @returns {Object} - Mapped object keys.
+*/
+
+function _keyMapping( inputObject ) {
+    return new Promise(async (resolve,reject)=>{
+        try {
+
+            if (inputObject.UDISE_CODE) {
+                inputObject.externalId = inputObject.UDISE_CODE;
+                delete inputObject.UDISE_CODE;
+            }
+
+            return inputObject;
+         
+        } catch(error){
+            return reject(error);
+        }
+    })
 }

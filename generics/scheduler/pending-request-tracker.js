@@ -6,11 +6,8 @@
  */
 
 // dependencies
-const requestTrackerHelper = 
-require(ROOT_PATH + "/module/request-tracker/helper");
-
-const punjabMISHelper = 
-require(ROOT_PATH + "/module/punjab-mis/helper");
+const requestTrackerHelper = require(ROOT_PATH + "/module/request-tracker/helper");
+const punjabMISHelper = require(ROOT_PATH + "/module/punjab-mis/helper");
 
 /**
   * Cron job for pending request tracker. 
@@ -27,8 +24,7 @@ let pendingRequestTracker = function () {
     return new Promise(async (resolve, reject) => {
       try{
         
-        let pendingRequests = 
-        await requestTrackerHelper.pending();
+        let pendingRequests = await requestTrackerHelper.pending();
 
         if ( pendingRequests && pendingRequests.length > 0 ) {
           for( 
@@ -37,8 +33,7 @@ let pendingRequestTracker = function () {
             pendingRequest ++
           ) {
 
-            let url = 
-            pendingRequests[pendingRequest].metaInformation.url.split("/");
+            let url = pendingRequests[pendingRequest].metaInformation.url.split("/");
 
             let methodName = url[url.length -1];
             let metaInformation = pendingRequests[pendingRequest].metaInformation;
@@ -51,19 +46,31 @@ let pendingRequestTracker = function () {
            
             if( methodName === constants.common.ENTITY_UPDATE ) {
 
-              await punjabMISHelper.entityUpdate(
+              await punjabMISHelper.updateEntity(
                 metaInformation,
                 requestTrackerId
               );
 
             } else if( methodName === constants.common.USER_UPDATE ) {
 
-              await punjabMISHelper.userUpdate(
+              await punjabMISHelper.updateUser(
                 metaInformation,
                 pendingRequests[pendingRequest].userId,
                 requestTrackerId
               );
+            } else if (methodName == constants.common.ENTITY_CREATE) {
 
+              await punjabMISHelper.createEntity(
+                metaInformation,
+                requestTrackerId
+              );
+
+            } else if (methodName == constants.common.USER_CREATE) {
+
+              await punjabMISHelper.createUser(
+                metaInformation,
+                requestTrackerId
+              );
             }
             
           }

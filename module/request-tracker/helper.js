@@ -126,9 +126,12 @@ module.exports = class RequestTrackerHelper {
         return new Promise(async (resolve, reject) => {
             try {
                 
-                let updateRequestTrackerData = await this.list({
+                let updateRequestTrackerData = await this.list
+                (
+                   {
                     status : constants.common.PENDING
-                },["metaInformation","userId"]
+                   },
+                   ["metaInformation"]
                 );
 
                 return resolve(updateRequestTrackerData);

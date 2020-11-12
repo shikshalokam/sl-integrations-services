@@ -1,0 +1,60 @@
+/**
+ * name : user-management.js
+ * author : Deepa
+ * Date : 05-Nov-2020
+ * Description : All user management service related api calls.
+ */
+
+//dependencies
+let userManagementServiceBaseURL = process.env.USER_MANAGEMENT_APPLICATION_ENDPOINT; 
+const request = require("request");
+
+
+/**
+  * Create user
+  * @function
+  * @name createUser
+  * @returns {JSON} returns response of API.
+*/
+
+const createUser = function (token, data) {
+
+    const createUserUrl = `${userManagementServiceBaseURL}${constants.endpoints.USER_CREATE}`;
+
+    let options = {
+        headers: {
+          "content-type": "application/json",
+          "X-authenticated-user-token": token,
+          "internal-access-token": process.env.INTERNAL_ACCESS_TOKEN
+        },
+        json: data
+    };
+    
+    return new Promise(async (resolve, reject) => {
+        try {
+            
+            request.post(createUserUrl,options,callback);
+
+            function callback(err,data){
+                if( err ) {
+                    return resolve({
+                        status : httpStatusCode.bad_request.status,
+                        message : 
+                        constants.apiResponses.USER_MANAGEMENT_SERVICE_SERVER_DOWN
+                    });
+                } else {
+                    let  userCreate = data.body;
+                    return resolve(userCreate);
+                }
+            }
+
+        } catch (error) {
+            return reject(error);
+        }
+    })
+}
+
+
+module.exports = {
+    createUser : createUser
+};
