@@ -56,7 +56,7 @@
         
         let result = await requestTrackerHelper.status
         ( 
-          req
+          req.params._id
         );
 
         return resolve({

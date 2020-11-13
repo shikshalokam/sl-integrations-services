@@ -21,7 +21,7 @@ module.exports = (req) => {
         },
 
         updateEntity : function () {
-            req.checkParams('id').exists().withMessage("required entityId")
+            req.checkParams('_id').exists().withMessage("required entityId")
             req.checkBody(Object.keys(req.body)).isEmpty().withMessage("request body is required");
         },
 
@@ -36,7 +36,7 @@ module.exports = (req) => {
         },
 
         updateUser : function () {
-            req.checkParams('id').exists().withMessage("required entityId")
+            req.checkParams('_id').exists().withMessage("required entityId")
             req.checkBody(Object.keys(req.body)).isEmpty().withMessage("request body is required");
         },
 

@@ -190,7 +190,8 @@
           );
 
           return resolve({
-            message: entityUpdateDocument.message
+            message: entityUpdateDocument.message,
+            result: entityUpdateDocument.data
           });
 
         } catch (error) {

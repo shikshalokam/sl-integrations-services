@@ -55,7 +55,7 @@ module.exports = class PunjabMISHelper {
                 );
                 
                 let entityUpdate = await samikshaService.updateEntity(
-                    req.params.id,
+                    req.params._id,
                     entityData
                 );
 
@@ -124,11 +124,11 @@ module.exports = class PunjabMISHelper {
 
                         userId = getUserIdByFacultyId.result.content[0].id;
 
-                        requestedData.body = await gen.utils.convertToCamelCase(requestedData.body);
+                        let userData = await _userKeyMapping(requestedData.body);
 
                         let userUpdate = await kendraService.updateUser(
                             userId,
-                            requestedData.body
+                            userData
                         );
 
                         if (userUpdate.status === httpStatusCode.ok.status) {
@@ -139,7 +139,6 @@ module.exports = class PunjabMISHelper {
                         }
                     }
                 }
-
             } catch (error) {
                 return resolve({
                     success: false,
@@ -188,7 +187,7 @@ module.exports = class PunjabMISHelper {
                
                 let entityCreate = await samikshaService.createEntity(
                     requestedData.query.entityType,
-                    requestedData.body
+                    entityData
                 );
 
                 if ( entityCreate.status === httpStatusCode.ok.status && entityCreate.result ) {
@@ -245,11 +244,11 @@ module.exports = class PunjabMISHelper {
 
                 if(getKeycloakAccessToken.status == httpStatusCode.ok.status ) {
 
-                    requestedData.body = await gen.utils.convertToCamelCase(requestedData.body);
+                    let userData = await _userKeyMapping(requestedData.body);
 
                     let userCreate = await userManagementService.createUser(
                         getKeycloakAccessToken.result.access_token,
-                        requestedData.body
+                        userData
                     );
     
                     if ( userCreate.status === httpStatusCode.ok.status && userCreate.result ) {
@@ -447,17 +446,32 @@ function _entityKeyMapping( inputObject ) {
  * @returns {Object} - Mapped object keys.
 */
 
-function _userKeyMapping( inputObject ) {
-    return new Promise(async (resolve,reject)=>{
+function _userKeyMapping(inputObject) {
+    return new Promise(async (resolve, reject) => {
         try {
-           
-           let userData = {
 
-           }
-            
-           return resolve(inputObject);
-         
-        } catch(error){
+            let userData = {
+                firstName: inputObject.Faculty_Name,
+                userName: inputObject.FacultyInfo_Code,
+                email: inputObject.Email_Id,
+                lastName: "",
+                organisation: {
+                    label: process.env.DEFAULT_ORGRANISATION_NAME,
+                    value: process.env.SUNBIRD_ORGANISATION_ID
+                },
+                roles: {
+                    label: "",
+                    value: ""
+                },
+                password: process.env.PUNJAB_SERVICE_DEFAULT_PASSWORD,
+                schoolCode: inputObject.School_Code,
+                schoolCodeCurrent: inputObject.School_Code_Current,
+                phoneNumber: inputObject.Mobile_No
+            }
+
+            return resolve(userData);
+
+        } catch (error) {
             return reject(error);
         }
     })
