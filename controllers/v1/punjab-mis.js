@@ -256,7 +256,8 @@
           );
 
           return resolve({
-             message: userDocument.message
+             message: userDocument.message,
+             result: userDocument.data
           });
 
         } catch (error) {
