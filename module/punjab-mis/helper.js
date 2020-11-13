@@ -106,8 +106,8 @@ module.exports = class PunjabMISHelper {
 
                 let getKeycloakAccessToken = await sunbirdService.getKeycloakToken
                 (
-                    process.env.DEFAULT_USERNAME,
-                    process.env.DEFAULT_PASSWORD
+                    process.env.PUNJAB_SERVICE_DEFAULT_USERNAME,
+                    process.env.PUNJAB_SERVICE_DEFAULT_PASSWORD
                 );
 
                 if (getKeycloakAccessToken.status == httpStatusCode.ok.status) {
@@ -238,8 +238,8 @@ module.exports = class PunjabMISHelper {
 
                 let getKeycloakAccessToken = await sunbirdService.getKeycloakToken
                 (
-                    process.env.DEFAULT_USERNAME,
-                    process.env.DEFAULT_PASSWORD
+                    process.env.PUNJAB_SERVICE_DEFAULT_USERNAME,
+                    process.env.PUNJAB_SERVICE_DEFAULT_PASSWORD
                 );
 
                 if(getKeycloakAccessToken.status == httpStatusCode.ok.status ) {
@@ -285,8 +285,8 @@ module.exports = class PunjabMISHelper {
 
                 let getKeycloakAccessToken = await sunbirdService.getKeycloakToken
                 (
-                    process.env.DEFAULT_USERNAME,
-                    process.env.DEFAULT_PASSWORD
+                    process.env.PUNJAB_SERVICE_DEFAULT_USERNAME,
+                    process.env.PUNJAB_SERVICE_DEFAULT_PASSWORD
                 );
 
                 if(getKeycloakAccessToken.status !== httpStatusCode.ok.status) {
