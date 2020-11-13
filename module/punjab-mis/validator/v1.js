@@ -26,13 +26,12 @@ module.exports = (req) => {
         },
 
         createUser : function () {
-            req.checkBody('Faculty_Name').isEmpty().withMessage("required Faculty_Name");
-            req.checkBody('Email_Id').isEmpty().withMessage("required Email_Id");
-            req.checkBody('Mobile_No').isEmpty().withMessage("required Mobile_No");
-            req.checkBody('FacultyInfo_Code').isEmpty().withMessage("required FacultyInfo_Code");
-            req.checkBody('School_Code_Current').isEmpty().withMessage("required School_Code_Current");
-            req.checkBody('School_Code').isEmpty().withMessage("required School_Code");
-            req.checkBody('Faculty_Name').isEmpty().withMessage("required Faculty_Name");
+            req.checkBody('Faculty_Name').exists().withMessage("required Faculty_Name");
+            req.checkBody('Email_Id').exists().withMessage("required Email_Id");
+            req.checkBody('Mobile_No').exists().withMessage("required Mobile_No");
+            req.checkBody('FacultyInfo_Code').exists().withMessage("required FacultyInfo_Code");
+            req.checkBody('School_Code_Current').exists().withMessage("required School_Code_Current");
+            req.checkBody('School_Code').exists().withMessage("required School_Code");
         },
 
         updateUser : function () {
