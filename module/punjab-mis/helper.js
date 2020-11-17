@@ -122,7 +122,7 @@ module.exports = class PunjabMISHelper {
                         getUserIdByFacultyId.result &&
                         getUserIdByFacultyId.result.content.length > 0) {
 
-                        userId = getUserIdByFacultyId.result.content[0].id;
+                        let userId = getUserIdByFacultyId.result.content[0].id;
 
                         let userData = await _userKeyMapping(requestedData.body);
 
