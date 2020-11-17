@@ -49,13 +49,17 @@ module.exports = class PunjabMISHelper {
                 
                 let entityData = await _entityKeyMapping(requestedData.body);
 
+                if (!entityData.externalId) {
+                    entityData.externalId =  requestedData.params._id;
+                }
+
                 entityData = await gen.utils.convertToCamelCase
                 ( 
                     entityData
                 );
                 
                 let entityUpdate = await samikshaService.updateEntity(
-                    req.params._id,
+                    requestedData.params._id,
                     entityData
                 );
 

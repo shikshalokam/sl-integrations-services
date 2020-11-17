@@ -74,7 +74,7 @@
      * }
      * @apiParamExample {json} Response :
      * {
-     *   "message": "",
+     *   "message": "Created entity successfully",
      *   "status": 200,
      *   "result": {
      *       "id": "5bfe53ea1d0c350d61b78d0a"
@@ -161,7 +161,7 @@
      * }
      * @apiParamExample {json} Response :
      * {
-     *   "message": "",
+     *   "message": "Updated entity data successfuly",
      *   "status": 200,
      *   "result": {
      *       "id": "5bfe53ea1d0c350d61b78d0a"
@@ -292,7 +292,7 @@
      * }
      * @apiParamExample {json} Response :
      * {
-     * "message": "",
+     * "message": "Updated user data successfuly",
      * "status": 200,
      * "result": {
      *    "id": "5bfe53ea1d0c350d61b78d0a"
