@@ -115,7 +115,7 @@ module.exports = class PunjabMISHelper {
                     let getUserIdByFacultyId = await sunbirdService.searchUser
                     (
                         getKeycloakAccessToken.result.access_token,
-                        requestedData.params.id
+                        requestedData.params._id
                     )
 
                     if (getUserIdByFacultyId.status == httpStatusCode.ok.status &&
@@ -245,7 +245,17 @@ module.exports = class PunjabMISHelper {
                 if(getKeycloakAccessToken.status == httpStatusCode.ok.status ) {
 
                     let userData = await _userKeyMapping(requestedData.body);
-
+                    userData.lastName = "",
+                    userData.organisation = {
+                            label: process.env.DEFAULT_ORGRANISATION_NAME,
+                            value: process.env.SUNBIRD_ORGANISATION_ID
+                    };
+                    userData.roles = {
+                            label: "",
+                            value: ""
+                    };
+                    userData.password = process.env.PUNJAB_SERVICE_DEFAULT_PASSWORD;
+                    
                     let userCreate = await userManagementService.createUser(
                         getKeycloakAccessToken.result.access_token,
                         userData
@@ -450,24 +460,20 @@ function _userKeyMapping(inputObject) {
     return new Promise(async (resolve, reject) => {
         try {
 
-            let userData = {
-                firstName: inputObject.Faculty_Name,
-                userName: inputObject.FacultyInfo_Code,
-                email: inputObject.Email_Id,
-                lastName: "",
-                organisation: {
-                    label: process.env.DEFAULT_ORGRANISATION_NAME,
-                    value: process.env.SUNBIRD_ORGANISATION_ID
-                },
-                roles: {
-                    label: "",
-                    value: ""
-                },
-                password: process.env.PUNJAB_SERVICE_DEFAULT_PASSWORD,
-                schoolCode: inputObject.School_Code,
-                schoolCodeCurrent: inputObject.School_Code_Current,
-                phoneNumber: inputObject.Mobile_No
+            let userKeyMapping = {
+                Faculty_Name: "firstName",
+                FacultyInfo_Code: "userName",
+                Email_Id: "email",
+                Mobile_No: "phoneNumber",
+                School_Code: "schoolCode",
+                School_Code_Current: "schoolCodeCurrent"
             }
+            
+            let userData = {};
+
+            Object.keys(inputObject).forEach( key => {
+                 userData[userKeyMapping[key]] = inputObject[key];
+            })          
 
             return resolve(userData);
 

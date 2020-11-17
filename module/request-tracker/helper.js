@@ -170,7 +170,9 @@ module.exports = class RequestTrackerHelper {
                 return resolve({
                     success: true,
                     message: constants.apiResponses.STATUS_FETCHED,
-                    data: requestTrackerDocument[0]
+                    data: {
+                           status: requestTrackerDocument[0].status
+                    }
                 });
 
             } catch (error) {

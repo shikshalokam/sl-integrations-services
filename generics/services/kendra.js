@@ -26,7 +26,9 @@ const updateUser = function (userId, data ) {
           "content-type": "application/json",
           "internal-access-token": process.env.INTERNAL_ACCESS_TOKEN
         },
-        json: data
+        json: {
+             metaInformation : data
+        }
     };
     
     return new Promise(async (resolve, reject) => {

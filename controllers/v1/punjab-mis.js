@@ -321,7 +321,8 @@
           );
 
           return resolve({
-            message: userUpdateDocument.message
+            message: userUpdateDocument.message,
+            result: userUpdateDocument.data
           });
 
         } catch (error) {
