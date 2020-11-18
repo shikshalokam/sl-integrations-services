@@ -329,16 +329,7 @@ module.exports = class PunjabMISHelper {
                         requestedData.body.entityId
                     )
 
-                    if (getObservationStatus.status == httpStatusCode.ok.status && getObservationStatus.result) {
-                        return resolve({
-                            success: true,
-                            message: constants.apiResponses.OBSERVATION_SUBMISSION_STATUS_FETCHED,
-                            data: getObservationStatus.result
-                        });
-                    }
-                    else {
-                        throw new Error(constants.apiResponses.COULD_NOT_FETCH_SUBMISSION_STATUS)
-                    }
+                    return resolve(getObservationStatus);
                 }
                 else {
                    throw new Error(constants.apiResponses.USER_NOT_FOUND)

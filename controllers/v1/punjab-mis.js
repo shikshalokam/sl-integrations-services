@@ -379,14 +379,14 @@
 
         try {
 
-          let result = await punjabMISHelper.getObservationStatus
+          let observationStatus = await punjabMISHelper.getObservationStatus
           ( 
             req 
           );
 
           return resolve({
-              message: result.message,
-              result: result.data
+              message: observationStatus.message,
+              result: observationStatus.result
           });
 
         } catch (error) {
